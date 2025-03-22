@@ -9,34 +9,32 @@ import { ArrowLeft, Minus, Plus, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 import Image from 'next/image'
+import { Category, Product } from '@/lib/types'
 
-const ProductDetailsPage = ({ id }: { id: string }) => {
-  console.log(id);
 
-  const product = products.find((p) => p.id === id)
 
+const ProductDetailsPage = ({ product,category }: { product: Product, category:Category }) => {
   if (!product) {
     notFound()
   }
 
-  const category = categories.find((c) => c._id === product.categoryId)
   const [quantity, setQuantity] = useState(1)
-  const [selectedColor, setSelectedColor] = useState(product.colors[0])
-  const [selectedSize, setSelectedSize] = useState(product.sizes[0])
+  // const [selectedColor, setSelectedColor] = useState(product.colors[0])
+  // const [selectedSize, setSelectedSize] = useState(product.sizes[0])
 
   const incrementQuantity = () => setQuantity((prev) => prev + 1)
   const decrementQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))
 
-  const handleOrder = () => {
-    sendOrderToWhatsApp({
-      productName: product.name,
-      productId: product.id,
-      price: product.price,
-      quantity,
-      color: selectedColor,
-      size: selectedSize,
-    })
-  }
+  // const handleOrder = () => {
+  //   sendOrderToWhatsApp({
+  //     productName: product?.product_name,
+  //     productId: product?._id,
+  //     price: product?.product_price,
+  //     quantity,
+  //     // color: selectedColor,
+  //     // size: selectedSize,
+  //   })
+  // }
   return (
     <div className="container mx-auto px-4 py-12">
       <Link
@@ -50,12 +48,12 @@ const ProductDetailsPage = ({ id }: { id: string }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         {/* Product Images */}
         <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
-          <Image src={product.image || "/placeholder.svg"} alt={product.name} fill className="object-cover" />
+          <Image src={product?.thumbnail_image || "/placeholder.svg"} alt={product?.product_name} fill className="object-cover" />
         </div>
 
         {/* Product Details */}
         <div>
-          <h1 className="font-poppins text-3xl font-bold text-[#222222] mb-2">{product.name}</h1>
+          <h1 className="font-poppins text-3xl font-bold text-[#222222] mb-2">{product?.product_name}</h1>
           <div className="flex items-center gap-2 mb-4">
             <div className="flex items-center">
               {[1, 2, 3, 4, 5].map((star) => (
@@ -68,10 +66,10 @@ const ProductDetailsPage = ({ id }: { id: string }) => {
           </div>
 
           <div className="font-poppins text-2xl font-bold text-[#ff6600] mb-6">
-            ${product.price.toFixed(2)}
-            {product.oldPrice && (
+            ${product?.product_price}
+            {/* {product.oldPrice && (
               <span className="ml-2 text-lg line-through text-[#666666]">${product.oldPrice.toFixed(2)}</span>
-            )}
+            )} */}
           </div>
 
           <p className="font-inter text-[#666666] mb-6">{product.description}</p>
@@ -80,7 +78,7 @@ const ProductDetailsPage = ({ id }: { id: string }) => {
           <div className="mb-6">
             <h3 className="font-poppins text-sm font-medium text-[#444444] mb-3">Color</h3>
             <div className="flex gap-3">
-              {product.colors.map((color) => (
+              {/* {product.colors.map((color) => (
                 <button
                   key={color}
                   onClick={() => setSelectedColor(color)}
@@ -89,7 +87,7 @@ const ProductDetailsPage = ({ id }: { id: string }) => {
                 >
                   <span className="block w-full h-full rounded-full" style={{ backgroundColor: color }} />
                 </button>
-              ))}
+              ))} */}
             </div>
           </div>
 
@@ -97,7 +95,7 @@ const ProductDetailsPage = ({ id }: { id: string }) => {
           <div className="mb-6">
             <h3 className="font-poppins text-sm font-medium text-[#444444] mb-3">Size</h3>
             <div className="flex gap-3">
-              {product.sizes.map((size) => (
+              {/* {product.sizes.map((size) => (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
@@ -108,7 +106,7 @@ const ProductDetailsPage = ({ id }: { id: string }) => {
                 >
                   {size}
                 </button>
-              ))}
+              ))} */}
             </div>
           </div>
 
@@ -128,7 +126,7 @@ const ProductDetailsPage = ({ id }: { id: string }) => {
 
           {/* Order Button */}
           <Button
-            onClick={handleOrder}
+            // onClick={handleOrder}
             size="lg"
             className="w-full bg-[#ff6600] hover:bg-[#ff6600]/90 text-white font-medium transition-transform hover:scale-105"
           >

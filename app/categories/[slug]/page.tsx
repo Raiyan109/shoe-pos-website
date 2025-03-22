@@ -1,13 +1,43 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
-import { categories, products } from "@/lib/data"
+import {  products } from "@/lib/data"
 import ProductCard from "@/components/ProductCard"
 import { ProductFilters } from "@/components/ProductFilters"
+import { Category, Product } from "@/lib/types"
+
+// Function to fetch categories from API
+async function getCategories(){
+  try {
+    const baseUrl = process.env.BASE_URL 
+    const res = await fetch(`${baseUrl}/category`, {
+      cache: "no-store",
+    })
+
+    return await res.json()
+  } catch (error) {
+    console.error("Error fetching categories:", error)
+  }
+}
+
+// Function to fetch products from API
+async function getProducts(){
+  try {
+    const baseUrl = process.env.BASE_URL 
+    const res = await fetch(`${baseUrl}/product`, {
+      cache: "no-store",
+    })
+
+    return await res.json()
+  } catch (error) {
+    console.error("Error fetching products:", error)
+  }
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const categories = await getCategories()
   const {slug} = await params
-  const category = categories.find((c) => c.category_slug === slug)
+  const category = categories?.data?.find((c:Category) => c.category_slug === slug)
 
   if (!category) {
     return {
@@ -22,15 +52,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
+  const categories = await getCategories()
+  const products = await getProducts()
   const {slug} = await params
-  const category = categories.find((c) => c?.category_slug === slug)
+  const category = categories?.data?.find((c:Category) => c?.category_slug === slug)
+  
 
   if (!category) {
     notFound()
   }
 
-  const categoryProducts = products.filter((product) => product.categoryId === category?._id)
-
+  const categoryProducts = products?.data?.filter((product:Product) => product.category_id?._id === category?._id)
+  
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="mb-8">
@@ -44,8 +77,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
         <div className="flex-1">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {categoryProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            {categoryProducts.map((product:Product) => (
+              <ProductCard key={product?._id} product={product} />
             ))}
           </div>
 
