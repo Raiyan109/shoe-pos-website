@@ -1,11 +1,10 @@
 'use client'
-import { categories, products } from '@/lib/data'
 import { sendOrderToWhatsApp } from '@/lib/whatsapp'
 import { notFound } from 'next/navigation'
 import React, { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowLeft, Minus, Plus, Share2 } from "lucide-react"
-
+import parse from "html-react-parser";
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 import Image from 'next/image'
@@ -72,7 +71,7 @@ const ProductDetailsPage = ({ product,category }: { product: Product, category:C
             )} */}
           </div>
 
-          <p className="font-inter text-[#666666] mb-6">{product.description}</p>
+          <div className="font-inter text-[#666666] mb-6">{parse(product?.description)}</div>
 
           {/* Color Selection */}
           <div className="mb-6">

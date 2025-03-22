@@ -15,13 +15,15 @@ export default function ProductCard({ product }: { product: Product }) {
 
   const variationBuyingPrices = product?.variations
     ? product.variations
-        .map((variation: Variation) => variation?.variation_buying_price)
+        .map((variation: Variation) => variation?.variation_price)
         .filter((price): price is number => price !== undefined)
     : [];
 
   // Get the first available discount & buying price
   const firstDiscountPrice = variationDiscountPrices.length > 0 ? variationDiscountPrices[0] : undefined;
   const firstBuyingPrice = variationBuyingPrices.length > 0 ? variationBuyingPrices[0] : undefined;
+  console.log(firstDiscountPrice);
+  
   
   return (
     <div className="group relative bg-white rounded-lg overflow-hidden shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
@@ -55,14 +57,16 @@ export default function ProductCard({ product }: { product: Product }) {
         <div className="font-poppins font-bold text-[#ff6600]">
             {product?.product_price ? (
               `$${product?.product_price}`
-            ) : firstDiscountPrice ? (
+            ) : firstDiscountPrice && firstDiscountPrice >0  ? (
               `$${firstDiscountPrice}`
             ) : (
-              "N/A"
+              "0"
             )}
 
-            {firstBuyingPrice && (
+            {firstBuyingPrice && firstBuyingPrice > 0 ? (
               <span className="ml-2 text-sm line-through text-[#666666]">${firstBuyingPrice}</span>
+            ) : (
+              <span className="ml-2 text-sm line-through text-[#666666]"></span>
             )}
           </div>
           {/* <div className="font-poppins font-bold text-[#ff6600]">
