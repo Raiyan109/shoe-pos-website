@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Menu, Search } from "lucide-react"
+import { ChevronRight, Menu, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
@@ -17,45 +17,14 @@ import {
     NavigationMenuTrigger,
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import * as React from "react"
 import { Category } from "@/lib/types"
 
-const components: { title: string; href: string; }[] = [
-    {
-        title: "Alert Dialog",
-        href: "/docs/primitives/alert-dialog",
-       
-    },
-    {
-        title: "Hover Card",
-        href: "/docs/primitives/hover-card",
-        
-    },
-    {
-        title: "Progress",
-        href: "/docs/primitives/progress",
-       
-    },
-    {
-        title: "Scroll-area",
-        href: "/docs/primitives/scroll-area",
-        
-    },
-    {
-        title: "Tabs",
-        href: "/docs/primitives/tabs",
-       
-    },
-    {
-        title: "Tooltip",
-        href: "/docs/primitives/tooltip",
-        
-    },
-]
-
-export default function Navbar({categories}: {categories: Category[]}) {
+export default function Navbar({ categories }: { categories: Category[] }) {
     const [isScrolled, setIsScrolled] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+    const [isSheetOpen, setIsSheetOpen] = useState(false)
 
     useEffect(() => {
         const handleScroll = () => {
@@ -82,47 +51,35 @@ export default function Navbar({categories}: {categories: Category[]}) {
 
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex items-center space-x-8">
-                        {/* <Link href="/" className="font-inter text-[#444444] hover:text-[#ff6600] transition-colors">
-                            Home
-                        </Link>
-                        <Link href="/categories" className="font-inter text-[#444444] hover:text-[#ff6600] transition-colors">
-                            Categories
-                        </Link>
-                        <Link href="#" className="font-inter text-[#444444] hover:text-[#ff6600] transition-colors">
-                            New Arrivals
-                        </Link>
-                        <Link href="#" className="font-inter text-[#444444] hover:text-[#ff6600] transition-colors">
-                            Contact
-                        </Link> */}
                         <NavigationMenu>
-                        <NavigationMenuList>
-                        <NavigationMenuItem>
-                                <Link href="/" legacyBehavior passHref>
-                                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                                        Home
-                                    </NavigationMenuLink>
-                                </Link>
-                            </NavigationMenuItem>
-                            <NavigationMenuItem>
-                                <NavigationMenuTrigger>Categories</NavigationMenuTrigger>
-                                <NavigationMenuContent>
-                                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                                        {categories.map((component:Category) => (
-                                            <ListItem
-                                                key={component?._id}
-                                                title={component?.category_name}
-                                                href={`/categories/${component?.category_slug}`}
-                                            >
-                                                {/* {component.description} */}
-                                            </ListItem>
-                                        ))}
-                                    </ul>
-                                </NavigationMenuContent>
-                            </NavigationMenuItem>
-                        </NavigationMenuList>
-                    </NavigationMenu>
+                            <NavigationMenuList>
+                                <NavigationMenuItem>
+                                    <Link href="/" legacyBehavior passHref>
+                                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                                            Home
+                                        </NavigationMenuLink>
+                                    </Link>
+                                </NavigationMenuItem>
+                                <NavigationMenuItem>
+                                    <NavigationMenuTrigger>Categories</NavigationMenuTrigger>
+                                    <NavigationMenuContent>
+                                        <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                                            {categories.map((component: Category) => (
+                                                <ListItem
+                                                    key={component?._id}
+                                                    title={component?.category_name}
+                                                    href={`/categories/${component?.category_slug}`}
+                                                >
+                                                    {/* {component.description} */}
+                                                </ListItem>
+                                            ))}
+                                        </ul>
+                                    </NavigationMenuContent>
+                                </NavigationMenuItem>
+                            </NavigationMenuList>
+                        </NavigationMenu>
                     </nav>
-                    
+
 
                     {/* Search and Mobile Menu */}
                     <div className="flex items-center space-x-4">
@@ -131,7 +88,7 @@ export default function Navbar({categories}: {categories: Category[]}) {
                         </Button>
 
                         {/* Mobile Menu */}
-                        <Sheet>
+                        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                             <SheetTrigger asChild className="md:hidden">
                                 <Button variant="ghost" size="icon" className="text-[#444444]">
                                     <Menu className="h-5 w-5" />
@@ -150,22 +107,40 @@ export default function Navbar({categories}: {categories: Category[]}) {
                                         <Input placeholder="Search products..." className="font-inter" style={{ width: '250px' }} />
                                     </div>
 
-                                    <nav className="flex flex-col space-y-6">
-                                        <Link href="/" className="font-inter text-lg text-[#444444] hover:text-[#ff6600] transition-colors">
+                                    <nav className="flex flex-col space-y-2">
+                                        <Link
+                                            href="/"
+                                            className="font-inter text-lg text-[#444444] hover:text-[#ff6600] transition-colors p-2 rounded-md hover:bg-gray-100"
+                                            onClick={() => setIsSheetOpen(false)}
+                                        >
                                             Home
                                         </Link>
-                                        <Link
-                                            href="/categories"
-                                            className="font-inter text-lg text-[#444444] hover:text-[#ff6600] transition-colors"
-                                        >
-                                            Categories
-                                        </Link>
-                                        <Link href="#" className="font-inter text-lg text-[#444444] hover:text-[#ff6600] transition-colors">
-                                            New Arrivals
-                                        </Link>
-                                        <Link href="#" className="font-inter text-lg text-[#444444] hover:text-[#ff6600] transition-colors">
-                                            Contact
-                                        </Link>
+
+                                        {/* Categories Accordion */}
+                                        <Accordion type="single" collapsible className="w-full">
+                                            <AccordionItem value="categories" className="border-none">
+                                                <AccordionTrigger className="font-inter text-lg text-[#444444] hover:text-[#ff6600] transition-colors p-2 rounded-md hover:bg-gray-100 py-2">
+                                                    Categories
+                                                </AccordionTrigger>
+                                                <AccordionContent>
+                                                    <div className="pl-4 py-2 space-y-2">
+                                                        {categories.map((category) => (
+                                                            <Link
+                                                                key={category?._id}
+                                                                href={`/categories/${category?.category_slug}`}
+                                                                className="font-inter text-[#444444] hover:text-[#ff6600] transition-colors flex items-center p-2 rounded-md hover:bg-gray-100"
+                                                                onClick={() => setIsSheetOpen(false)}
+                                                            >
+                                                                <ChevronRight className="h-4 w-4 mr-2 text-[#ff6600]" />
+                                                                {category?.category_name}
+                                                            </Link>
+                                                        ))}
+                                                    </div>
+                                                </AccordionContent>
+                                            </AccordionItem>
+                                        </Accordion>
+
+
                                     </nav>
                                 </div>
                             </SheetContent>
