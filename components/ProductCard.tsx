@@ -1,10 +1,14 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import type { Product } from "@/lib/types"
+import type { Product, Variation } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 
 export default function ProductCard({ product }: { product: Product }) {
+  const variationDiscountPrice = product?.variations.map((variation:Variation) => variation?.variation_discount_price)
+  const variationBuyingPrice = product?.variations.map((variation:Variation) => variation?.variation_buying_price)
+  console.log(variationBuyingPrice);
+  
   return (
     <div className="group relative bg-white rounded-lg overflow-hidden shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
       <Link href={`/products/${product?._id}`} className="block relative aspect-square overflow-hidden">
@@ -31,15 +35,14 @@ export default function ProductCard({ product }: { product: Product }) {
           </h3>
         </Link>
 
-        <p className="font-inter text-sm text-[#666666] mb-3 line-clamp-2">{product.description}</p>
+        {/* <p className="font-inter text-sm text-[#666666] mb-3 line-clamp-2">{product.description}</p> */}
 
         <div className="flex items-center justify-between">
           <div className="font-poppins font-bold text-[#ff6600]">
-            {/* ${product?.product_price.toFixed(2)} */}
-            ${product?.product_price}
-            {/* {product.oldPrice && (
-              <span className="ml-2 text-sm line-through text-[#666666]">${product.oldPrice.toFixed(2)}</span>
-            )} */}
+            ${variationDiscountPrice[0]}
+            {variationBuyingPrice[0] && (
+              <span className="ml-2 text-sm line-through text-[#666666]">${variationBuyingPrice[0]}</span>
+            )}
           </div>
 
           <Button

@@ -43,6 +43,7 @@ export interface Product {
   meta_title?: string;
   meta_description?: string;
   meta_keywords?: MetaKeyword[];
+  variations: Variation[]
 }
 
   
@@ -60,6 +61,22 @@ export interface Product {
     brand_slug: string
     brand_logo: string
     // productCount: number
+  }
+
+  export interface Variation {
+    _id?: any;
+    variation_name: string;
+    product_id: string;
+    variation_price: number;
+    variation_discount_price?: number;
+    variation_buying_price?: number;
+    variation_quantity: number;
+    variation_alert_quantity?: number;
+    variation_barcode?: string;
+    variation_barcode_image?: string;
+    variation_image?: string;
+    variation_image_key?: string;
+    variation_sku?: string;
   }
   
   export interface OrderDetails {
