@@ -265,7 +265,7 @@ export default function Navbar({ categories, products }: { categories: Category[
                                 </div>
                             ) : (
                                 <div className="text-center py-8">
-                                    <p className="font-inter text-[#666666]">No products found matching "{searchQuery}"</p>
+                                    <p className="font-inter text-[#666666]">No products found matching &quot;{searchQuery}&quot;</p>
                                 </div>
                             )}
                         </div>
