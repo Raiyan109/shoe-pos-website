@@ -1,7 +1,5 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-
-import {  products } from "@/lib/data"
 import ProductCard from "@/components/ProductCard"
 import { ProductFilters } from "@/components/ProductFilters"
 import { Category, Product } from "@/lib/types"

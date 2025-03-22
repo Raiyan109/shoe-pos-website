@@ -1,17 +1,8 @@
-import { ArrowRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-
-import { Button } from "@/components/ui/button"
-import ProductCard from "@/components/ProductCard"
 import BannerCarousel from "@/components/BannerCarousel"
-import { featuredProducts } from "@/lib/data"
 import { Category } from "@/lib/types"
 import { getBanners, getCategories } from "@/lib/api"
-
-
-
-
 
 
 export default async function Home() {

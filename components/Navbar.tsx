@@ -24,7 +24,7 @@ import Image from "next/image"
 
 export default function Navbar({ categories, products }: { categories: Category[], products: Product[] }) {
     const [isScrolled, setIsScrolled] = useState(false)
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+    // const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isSheetOpen, setIsSheetOpen] = useState(false)
     const [isSearchOpen, setIsSearchOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")

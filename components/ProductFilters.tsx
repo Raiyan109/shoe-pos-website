@@ -4,14 +4,13 @@ import { useState } from "react"
 import { ChevronDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Slider } from "@/components/ui/slider"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Brand } from "@/lib/types"
 
 export function ProductFilters({brands}: {brands:Brand[]}) {
-  const [priceRange, setPriceRange] = useState([0, 500])
+  // const [priceRange, setPriceRange] = useState([0, 500])
 
   return (
     <div className="space-y-6">

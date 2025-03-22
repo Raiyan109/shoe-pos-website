@@ -3,7 +3,7 @@ import { sendOrderToWhatsApp } from '@/lib/whatsapp'
 import { notFound } from 'next/navigation'
 import React, { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowLeft, Minus, Plus, Share2 } from "lucide-react"
+import { ArrowLeft, Minus, Plus } from "lucide-react"
 import parse from "html-react-parser";
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
