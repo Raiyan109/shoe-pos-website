@@ -4,39 +4,65 @@ import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 import ProductCard from "@/components/ProductCard"
+import BannerCarousel from "@/components/BannerCarousel"
 import { featuredProducts, categories } from "@/lib/data"
 
-export default function Home() {
+// Function to fetch banners from API
+async function getBanners() {
+  try {
+    const baseUrl = process.env.BASE_URL || "http://localhost:5000/api/v1"
+    const res = await fetch(`${baseUrl}/banner`, {
+      cache: "no-store",
+    })
+
+    if (!res.ok) {
+      // If the API fails, return fallback banners
+      return getFallbackBanners()
+    }
+
+    return await res.json()
+  } catch (error) {
+    console.error("Error fetching banners:", error)
+    // Return fallback banners in case of error
+    return getFallbackBanners()
+  }
+}
+
+// Fallback banners in case API fails
+function getFallbackBanners() {
+  return [
+    {
+      id: "banner1",
+      title: "Discover Quality Products For Your Lifestyle",
+      description: "Explore our curated collection of premium products designed to enhance your everyday experience.",
+      imageUrl: "/placeholder.svg?height=1080&width=1920",
+      link: "/categories",
+    },
+    {
+      id: "banner2",
+      title: "New Season Collection",
+      description: "Discover the latest trends and styles for the new season.",
+      imageUrl: "/placeholder.svg?height=1080&width=1920",
+      link: "/categories/clothing",
+    },
+    {
+      id: "banner3",
+      title: "Special Offers",
+      description: "Limited time deals on our most popular products.",
+      imageUrl: "/placeholder.svg?height=1080&width=1920",
+      link: "/products",
+    },
+  ]
+}
+
+export default async function Home() {
+  const banners = await getBanners()
+
   return (
     <main className="flex-1">
-      {/* Hero Section */}
-      <section className="relative h-[70vh] flex items-center">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/placeholder.svg?height=1080&width=1920"
-            alt="Hero background"
-            fill
-            className="object-cover brightness-[0.8]"
-            priority
-          />
-        </div>
-        <div className="container relative z-10 mx-auto px-4 py-32 text-white">
-          <h1 className="font-poppins text-4xl md:text-5xl lg:text-6xl font-bold mb-6 max-w-2xl">
-            Discover Quality Products For Your Lifestyle
-          </h1>
-          <p className="font-inter text-lg md:text-xl mb-8 max-w-xl">
-            Explore our curated collection of premium products designed to enhance your everyday experience.
-          </p>
-          <Button
-            asChild
-            size="lg"
-            className="bg-[#ff6600] hover:bg-[#ff6600]/90 text-white font-medium transition-transform hover:scale-105"
-          >
-            <Link href="/categories">
-              Shop Now <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
-        </div>
+      {/* Hero Carousel Section */}
+      <section className="relative">
+        <BannerCarousel banners={banners?.data} />
       </section>
 
       {/* Categories Section */}
