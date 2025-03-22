@@ -8,6 +8,7 @@ export interface Attribute {
 }
 
 export interface AdditionalImage {
+  _id: string;
   additional_image?: string;
   additional_image_key?: string;
 }

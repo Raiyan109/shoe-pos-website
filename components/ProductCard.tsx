@@ -22,9 +22,7 @@ export default function ProductCard({ product }: { product: Product }) {
   // Get the first available discount & buying price
   const firstDiscountPrice = variationDiscountPrices.length > 0 ? variationDiscountPrices[0] : undefined;
   const firstBuyingPrice = variationBuyingPrices.length > 0 ? variationBuyingPrices[0] : undefined;
-  console.log(firstDiscountPrice);
-  
-  
+ 
   return (
     <div className="group relative bg-white rounded-lg overflow-hidden shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
       <Link href={`/products/${product?._id}`} className="block relative aspect-square overflow-hidden">

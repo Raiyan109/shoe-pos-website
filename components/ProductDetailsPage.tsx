@@ -8,16 +8,35 @@ import parse from "html-react-parser";
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 import Image from 'next/image'
-import { Category, Product } from '@/lib/types'
+import { Category, Product, Variation } from '@/lib/types'
 
 
 
 const ProductDetailsPage = ({ product,category }: { product: Product, category:Category }) => {
+  
   if (!product) {
     notFound()
   }
 
+  // Check if variations exist before mapping
+    const variationDiscountPrices = product?.variations
+      ? product.variations
+          .map((variation: Variation) => variation?.variation_discount_price)
+          .filter((price): price is number => price !== undefined)
+      : [];
+  
+    const variationBuyingPrices = product?.variations
+      ? product.variations
+          .map((variation: Variation) => variation?.variation_price)
+          .filter((price): price is number => price !== undefined)
+      : [];
+  
+    // Get the first available discount & buying price
+    const firstDiscountPrice = variationDiscountPrices.length > 0 ? variationDiscountPrices[0] : undefined;
+    const firstBuyingPrice = variationBuyingPrices.length > 0 ? variationBuyingPrices[0] : undefined;
+
   const [quantity, setQuantity] = useState(1)
+  const [currentImage, setCurrentImage] = useState(product?.thumbnail_image)
   // const [selectedColor, setSelectedColor] = useState(product.colors[0])
   // const [selectedSize, setSelectedSize] = useState(product.sizes[0])
 
@@ -46,8 +65,51 @@ const ProductDetailsPage = ({ product,category }: { product: Product, category:C
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         {/* Product Images */}
-        <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
+        {/* <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
           <Image src={product?.thumbnail_image || "/placeholder.svg"} alt={product?.product_name} fill className="object-cover" />
+        </div> */}
+        <div className="space-y-4">
+          <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
+          <Image src={currentImage || "/placeholder.svg"} alt={product?.product_name} fill className="object-cover" />
+          </div>
+
+          {/* Additional Images */}
+          {product?.additional_images && product.additional_images.length > 0 && (
+            <div className="flex gap-2 overflow-x-auto pb-2">
+              {/* Main thumbnail */}
+              <button
+                onClick={() => setCurrentImage(product?.thumbnail_image)}
+                className={`flex-shrink-0 relative w-20 h-20 rounded-md overflow-hidden border-2 ${
+                  currentImage === product?.thumbnail_image ? "border-[#ff6600]" : "border-transparent"
+                }`}
+              >
+                <Image
+                  src={product?.thumbnail_image || "/placeholder.svg"}
+                  alt={`${product?.product_name} thumbnail`}
+                  fill
+                  className="object-cover"
+                />
+              </button>
+
+              {/* Additional images */}
+              {product.additional_images.map((img) => (
+                <button
+                  key={img._id}
+                  onClick={() => setCurrentImage(img?.additional_image || '')}
+                  className={`flex-shrink-0 relative w-20 h-20 rounded-md overflow-hidden border-2 ${
+                    currentImage === img.additional_image ? "border-[#ff6600]" : "border-transparent"
+                  }`}
+                >
+                  <Image
+                    src={img.additional_image || "/placeholder.svg"}
+                    alt={`${product.product_name} additional view`}
+                    fill
+                    className="object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Product Details */}
@@ -65,10 +127,18 @@ const ProductDetailsPage = ({ product,category }: { product: Product, category:C
           </div>
 
           <div className="font-poppins text-2xl font-bold text-[#ff6600] mb-6">
-            ${product?.product_price}
-            {/* {product.oldPrice && (
-              <span className="ml-2 text-lg line-through text-[#666666]">${product.oldPrice.toFixed(2)}</span>
-            )} */}
+          {product?.product_price ? (
+              `$${product?.product_price}`
+            ) : firstDiscountPrice && firstDiscountPrice >0  ? (
+              `$${firstDiscountPrice}`
+            ) : (
+              "0"
+            )}
+            {firstBuyingPrice && firstBuyingPrice > 0 ? (
+              <span className="ml-2 text-lg line-through text-[#666666]">${firstBuyingPrice}</span>
+            ) : (
+              <span className="ml-2 text-sm line-through text-[#666666]"></span>
+            )}
           </div>
 
           <div className="font-inter text-[#666666] mb-6">{parse(product?.description)}</div>
@@ -156,12 +226,12 @@ const ProductDetailsPage = ({ product,category }: { product: Product, category:C
           </TabsList>
           <TabsContent value="description" className="pt-6">
             <div className="font-inter text-[#666666] space-y-4">
-              <p>{product.description}</p>
-              <p>
+              <div>{parse(product.description)}</div>
+              {/* <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
                 ex ea commodo consequat.
-              </p>
+              </p> */}
             </div>
           </TabsContent>
           <TabsContent value="specifications" className="pt-6">
