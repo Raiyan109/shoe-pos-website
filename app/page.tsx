@@ -7,68 +7,12 @@ import ProductCard from "@/components/ProductCard"
 import BannerCarousel from "@/components/BannerCarousel"
 import { featuredProducts } from "@/lib/data"
 import { Category } from "@/lib/types"
+import { getBanners, getCategories } from "@/lib/api"
 
-// Function to fetch banners from API
-async function getBanners() {
-  try {
-    const baseUrl = process.env.BASE_URL 
-    const res = await fetch(`${baseUrl}/banner`, {
-      cache: "no-store",
-    })
 
-    if (!res.ok) {
-      // If the API fails, return fallback banners
-      return getFallbackBanners()
-    }
 
-    return await res.json()
-  } catch (error) {
-    console.error("Error fetching banners:", error)
-    // Return fallback banners in case of error
-    return getFallbackBanners()
-  }
-}
 
-// Function to fetch categories from API
-async function getCategories(){
-  try {
-    const baseUrl = process.env.BASE_URL 
-    const res = await fetch(`${baseUrl}/category`, {
-      cache: "no-store",
-    })
 
-    return await res.json()
-  } catch (error) {
-    console.error("Error fetching categories:", error)
-  }
-}
-
-// Fallback banners in case API fails
-function getFallbackBanners() {
-  return [
-    {
-      id: "banner1",
-      title: "Discover Quality Products For Your Lifestyle",
-      description: "Explore our curated collection of premium products designed to enhance your everyday experience.",
-      imageUrl: "/placeholder.svg?height=1080&width=1920",
-      link: "/categories",
-    },
-    {
-      id: "banner2",
-      title: "New Season Collection",
-      description: "Discover the latest trends and styles for the new season.",
-      imageUrl: "/placeholder.svg?height=1080&width=1920",
-      link: "/categories/clothing",
-    },
-    {
-      id: "banner3",
-      title: "Special Offers",
-      description: "Limited time deals on our most popular products.",
-      imageUrl: "/placeholder.svg?height=1080&width=1920",
-      link: "/products",
-    },
-  ]
-}
 
 export default async function Home() {
   const banners = await getBanners()

@@ -210,7 +210,6 @@ export default function Navbar({ categories, products }: { categories: Category[
                             {searchResults.length > 0 ? (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                     {searchResults.map((product) => {
-                                        console.log(product);
                                         // Check if variations exist before mapping
                                         const variationDiscountPrices = product?.variations
                                             ? product.variations

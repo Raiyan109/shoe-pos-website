@@ -2,25 +2,13 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import Image from "next/image"
 import { Category } from "@/lib/types"
+import { getCategories } from "@/lib/api"
 
 export const metadata: Metadata = {
   title: "Categories | E-commerce Store",
   description: "Browse all product categories in our store",
 }
 
-// Function to fetch categories from API
-async function getCategories(){
-  try {
-    const baseUrl = process.env.BASE_URL 
-    const res = await fetch(`${baseUrl}/category`, {
-      cache: "no-store",
-    })
-
-    return await res.json()
-  } catch (error) {
-    console.error("Error fetching categories:", error)
-  }
-}
 
 export default async function CategoriesPage() {
   const categories = await getCategories()

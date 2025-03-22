@@ -5,48 +5,8 @@ import {  products } from "@/lib/data"
 import ProductCard from "@/components/ProductCard"
 import { ProductFilters } from "@/components/ProductFilters"
 import { Category, Product } from "@/lib/types"
+import { getBrands, getCategories, getProducts } from "@/lib/api"
 
-// Function to fetch categories from API
-async function getCategories(){
-  try {
-    const baseUrl = process.env.BASE_URL 
-    const res = await fetch(`${baseUrl}/category`, {
-      cache: "no-store",
-    })
-
-    return await res.json()
-  } catch (error) {
-    console.error("Error fetching categories:", error)
-  }
-}
-
-// Function to fetch products from API
-async function getProducts(){
-  try {
-    const baseUrl = process.env.BASE_URL 
-    const res = await fetch(`${baseUrl}/product`, {
-      cache: "no-store",
-    })
-
-    return await res.json()
-  } catch (error) {
-    console.error("Error fetching products:", error)
-  }
-}
-
-// Function to fetch products from API
-async function getBrands(){
-  try {
-    const baseUrl = process.env.BASE_URL 
-    const res = await fetch(`${baseUrl}/brand`, {
-      cache: "no-store",
-    })
-
-    return await res.json()
-  } catch (error) {
-    console.error("Error fetching brands:", error)
-  }
-}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const categories = await getCategories()

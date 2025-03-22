@@ -1,4 +1,4 @@
-interface AttributeValue {
+export interface AttributeValue {
   _id: string;
   attribute_value_name?: string;
 }
@@ -70,7 +70,7 @@ export interface Product {
     _id?: any;
     variation_name: string;
     product_id: string;
-    variation_price: number;
+  variation_price: number;
     variation_discount_price?: number;
     variation_buying_price?: number;
     variation_quantity: number;
