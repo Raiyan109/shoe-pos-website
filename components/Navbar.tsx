@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ChevronRight, Menu, Search } from "lucide-react"
+import { ChevronRight, Menu, Search, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
@@ -19,12 +19,45 @@ import {
 } from "@/components/ui/navigation-menu"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import * as React from "react"
-import { Category } from "@/lib/types"
+import { Category, Product, Variation } from "@/lib/types"
+import Image from "next/image"
 
-export default function Navbar({ categories }: { categories: Category[] }) {
+export default function Navbar({ categories, products }: { categories: Category[], products: Product[] }) {
     const [isScrolled, setIsScrolled] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isSheetOpen, setIsSheetOpen] = useState(false)
+    const [isSearchOpen, setIsSearchOpen] = useState(false)
+    const [searchQuery, setSearchQuery] = useState("")
+    const [searchResults, setSearchResults] = useState<Product[]>([])
+    const searchInputRef = React.useRef<HTMLInputElement>(null)
+
+    useEffect(() => {
+        // Focus the search input when search is opened
+        if (isSearchOpen && searchInputRef.current) {
+            searchInputRef.current.focus()
+        }
+    }, [isSearchOpen])
+
+    // Handle search
+    useEffect(() => {
+        if (searchQuery.trim() === "") {
+            setSearchResults([])
+            return
+        }
+
+        const query = searchQuery.toLowerCase()
+        const filtered = products.filter((product) => product?.product_name.toLowerCase().includes(query))
+        setSearchResults(filtered)
+    }, [searchQuery])
+
+    const toggleSearch = () => {
+        setIsSearchOpen(!isSearchOpen)
+        if (!isSearchOpen) {
+            // Reset search when opening
+            setSearchQuery("")
+            setSearchResults([])
+        }
+    }
 
     useEffect(() => {
         const handleScroll = () => {
@@ -83,7 +116,7 @@ export default function Navbar({ categories }: { categories: Category[] }) {
 
                     {/* Search and Mobile Menu */}
                     <div className="flex items-center space-x-4">
-                        <Button variant="ghost" size="icon" className="text-[#444444]">
+                        <Button variant="ghost" size="icon" className="text-[#444444]" onClick={toggleSearch}>
                             <Search className="h-5 w-5" />
                         </Button>
 
@@ -146,6 +179,98 @@ export default function Navbar({ categories }: { categories: Category[] }) {
                             </SheetContent>
                         </Sheet>
                     </div>
+                </div>
+            </div>
+
+            {/* Search Panel */}
+            <div className={cn(
+                "absolute left-0 right-0 bg-white shadow-md transition-all duration-300 overflow-hidden",
+                isSearchOpen ? "max-h-[80vh] border-t" : "max-h-0",
+            )}>
+                <div className="container mx-auto px-4 py-4">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="relative flex-1 max-w-2xl">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                            <Input
+                                ref={searchInputRef}
+                                placeholder="Search products..."
+                                className="pl-10 font-inter"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                        </div>
+                        <Button variant="ghost" size="icon" className="ml-2 text-[#444444]" onClick={toggleSearch}>
+                            <X className="h-5 w-5" />
+                        </Button>
+                    </div>
+
+                    {/* Search Results */}
+                    {searchQuery.trim() !== "" && (
+                        <div className="mt-4 max-h-[60vh] overflow-y-auto">
+                            {searchResults.length > 0 ? (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                    {searchResults.map((product) => {
+                                        console.log(product);
+                                        // Check if variations exist before mapping
+                                        const variationDiscountPrices = product?.variations
+                                            ? product.variations
+                                                .map((variation: Variation) => variation?.variation_discount_price)
+                                                .filter((price): price is number => price !== undefined)
+                                            : [];
+
+                                        const variationBuyingPrices = product?.variations
+                                            ? product.variations
+                                                .map((variation: Variation) => variation?.variation_price)
+                                                .filter((price): price is number => price !== undefined)
+                                            : [];
+
+                                        // Get the first available discount & buying price
+                                        const firstDiscountPrice = variationDiscountPrices.length > 0 ? variationDiscountPrices[0] : undefined;
+                                        const firstBuyingPrice = variationBuyingPrices.length > 0 ? variationBuyingPrices[0] : undefined;
+                                        return (
+                                            <Link
+                                                key={product?._id}
+                                                href={`/products/${product?._id}`}
+                                                className="flex items-center p-2 rounded-md hover:bg-gray-50 transition-colors"
+                                                onClick={() => setIsSearchOpen(false)}
+                                            >
+                                                <div className="relative w-16 h-16 rounded overflow-hidden flex-shrink-0">
+                                                    <Image
+                                                        src={product?.thumbnail_image || "/placeholder.svg"}
+                                                        alt={product?.product_name}
+                                                        fill
+                                                        className="object-cover"
+                                                    />
+                                                </div>
+                                                <div className="ml-3 flex-1">
+                                                    <h3 className="font-poppins text-sm font-medium text-[#333333] line-clamp-2">{product?.product_name}</h3>
+                                                    <div className="font-poppins font-bold text-[#ff6600]">
+                                                        {product?.product_price ? (
+                                                            `$${product?.product_price}`
+                                                        ) : firstDiscountPrice && firstDiscountPrice > 0 ? (
+                                                            `$${firstDiscountPrice}`
+                                                        ) : (
+                                                            "0"
+                                                        )}
+
+                                                        {firstBuyingPrice && firstBuyingPrice > 0 ? (
+                                                            <span className="ml-2 text-sm line-through text-[#666666]">${firstBuyingPrice}</span>
+                                                        ) : (
+                                                            <span className="ml-2 text-sm line-through text-[#666666]"></span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        )
+                                    })}
+                                </div>
+                            ) : (
+                                <div className="text-center py-8">
+                                    <p className="font-inter text-[#666666]">No products found matching "{searchQuery}"</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </header>

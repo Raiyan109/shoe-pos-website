@@ -14,11 +14,26 @@ async function getCategories(){
     }
   }
 
+  // Function to fetch products from API
+async function getProducts(){
+  try {
+    const baseUrl = process.env.BASE_URL 
+    const res = await fetch(`${baseUrl}/product`, {
+      cache: "no-store",
+    })
+
+    return await res.json()
+  } catch (error) {
+    console.error("Error fetching products:", error)
+  }
+}
+
 export async function MenuNav() {
     const categories = await getCategories()
+    const products = await getProducts()
     return (
         <>
-            <Navbar categories={categories?.data} />
+            <Navbar categories={categories?.data} products={products?.data} />
         </>
     )
 }

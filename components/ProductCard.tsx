@@ -5,24 +5,24 @@ import type { Product, Variation } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 
 export default function ProductCard({ product }: { product: Product }) {
- 
+
   // Check if variations exist before mapping
   const variationDiscountPrices = product?.variations
     ? product.variations
-        .map((variation: Variation) => variation?.variation_discount_price)
-        .filter((price): price is number => price !== undefined)
+      .map((variation: Variation) => variation?.variation_discount_price)
+      .filter((price): price is number => price !== undefined)
     : [];
 
   const variationBuyingPrices = product?.variations
     ? product.variations
-        .map((variation: Variation) => variation?.variation_price)
-        .filter((price): price is number => price !== undefined)
+      .map((variation: Variation) => variation?.variation_price)
+      .filter((price): price is number => price !== undefined)
     : [];
 
   // Get the first available discount & buying price
   const firstDiscountPrice = variationDiscountPrices.length > 0 ? variationDiscountPrices[0] : undefined;
   const firstBuyingPrice = variationBuyingPrices.length > 0 ? variationBuyingPrices[0] : undefined;
- 
+
   return (
     <div className="group relative bg-white rounded-lg overflow-hidden shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
       <Link href={`/products/${product?._id}`} className="block relative aspect-square overflow-hidden">
@@ -52,10 +52,10 @@ export default function ProductCard({ product }: { product: Product }) {
         {/* <p className="font-inter text-sm text-[#666666] mb-3 line-clamp-2">{product.description}</p> */}
 
         <div className="flex items-center justify-between">
-        <div className="font-poppins font-bold text-[#ff6600]">
+          <div className="font-poppins font-bold text-[#ff6600]">
             {product?.product_price ? (
               `$${product?.product_price}`
-            ) : firstDiscountPrice && firstDiscountPrice >0  ? (
+            ) : firstDiscountPrice && firstDiscountPrice > 0 ? (
               `$${firstDiscountPrice}`
             ) : (
               "0"
