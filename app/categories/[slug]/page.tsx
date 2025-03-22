@@ -36,8 +36,6 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   }
 
   const categoryProducts = products?.data?.filter((product:Product) => product.category_id?._id === category?._id)
-  console.log(categoryProducts, 'categoryProducts from page.tsx');
-  
   
   return (
     <div className="container mx-auto px-4 py-12">

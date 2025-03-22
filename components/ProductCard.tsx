@@ -9,13 +9,13 @@ export default function ProductCard({ product }: { product: Product }) {
   // Check if variations exist before mapping
   const variationDiscountPrices = product?.variations
     ? product.variations
-      .map((variation: Variation) => variation?.variation_discount_price)
+      ?.map((variation: Variation) => variation?.variation_discount_price)
       .filter((price): price is number => price !== undefined)
     : [];
 
   const variationBuyingPrices = product?.variations
     ? product.variations
-      .map((variation: Variation) => variation?.variation_price)
+      ?.map((variation: Variation) => variation?.variation_price)
       .filter((price): price is number => price !== undefined)
     : [];
 

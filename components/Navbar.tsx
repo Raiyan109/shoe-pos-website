@@ -97,7 +97,7 @@ export default function Navbar({ categories, products }: { categories: Category[
                                     <NavigationMenuTrigger>Categories</NavigationMenuTrigger>
                                     <NavigationMenuContent>
                                         <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                                            {categories.map((component: Category) => (
+                                            {categories?.map((component: Category) => (
                                                 <ListItem
                                                     key={component?._id}
                                                     title={component?.category_name}
@@ -157,7 +157,7 @@ export default function Navbar({ categories, products }: { categories: Category[
                                                 </AccordionTrigger>
                                                 <AccordionContent>
                                                     <div className="pl-4 py-2 space-y-2">
-                                                        {categories.map((category) => (
+                                                        {categories?.map((category) => (
                                                             <Link
                                                                 key={category?._id}
                                                                 href={`/categories/${category?.category_slug}`}
@@ -209,17 +209,17 @@ export default function Navbar({ categories, products }: { categories: Category[
                         <div className="mt-4 max-h-[60vh] overflow-y-auto">
                             {searchResults.length > 0 ? (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                    {searchResults.map((product) => {
+                                    {searchResults?.map((product) => {
                                         // Check if variations exist before mapping
                                         const variationDiscountPrices = product?.variations
-                                            ? product.variations
-                                                .map((variation: Variation) => variation?.variation_discount_price)
+                                            ? product?.variations
+                                                ?.map((variation: Variation) => variation?.variation_discount_price)
                                                 .filter((price): price is number => price !== undefined)
                                             : [];
 
                                         const variationBuyingPrices = product?.variations
                                             ? product.variations
-                                                .map((variation: Variation) => variation?.variation_price)
+                                                ?.map((variation: Variation) => variation?.variation_price)
                                                 .filter((price): price is number => price !== undefined)
                                             : [];
 

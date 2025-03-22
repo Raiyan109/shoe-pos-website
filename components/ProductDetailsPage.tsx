@@ -30,13 +30,13 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
   // Check if variations exist before mapping
   const variationDiscountPrices = product?.variations
     ? product.variations
-      .map((variation: Variation) => variation?.variation_discount_price)
+      ?.map((variation: Variation) => variation?.variation_discount_price)
       .filter((price): price is number => price !== undefined)
     : [];
 
   const variationBuyingPrices = product?.variations
     ? product.variations
-      .map((variation: Variation) => variation?.variation_price)
+      ?.map((variation: Variation) => variation?.variation_price)
       .filter((price): price is number => price !== undefined)
     : [];
 
@@ -68,8 +68,7 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
       // Fallback price if neither is available
       price = 0
     }
-    console.log(selectedAttributes);
-
+  
     sendOrderToWhatsApp({
       productName: product?.product_name,
       productId: product?._id,
@@ -114,7 +113,7 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
               </button>
 
               {/* Additional images */}
-              {product.additional_images.map((img) => (
+              {product.additional_images?.map((img) => (
                 <button
                   key={img._id}
                   onClick={() => setCurrentImage(img?.additional_image || '')}

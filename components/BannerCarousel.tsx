@@ -48,7 +48,7 @@ export default function BannerCarousel({ banners }: BannerCarouselProps) {
                 className="flex transition-transform duration-500 ease-out h-full"
                 style={{ transform: `translateX(-${current * 100}%)` }}
             >
-                {banners.map((banner, index) => (
+                {banners?.map((banner, index) => (
                     <div key={banner?._id} className="w-full h-full flex-shrink-0 relative">
                         <Image
                             src={banner?.banner_logo || "/placeholder.svg"}
@@ -100,7 +100,7 @@ export default function BannerCarousel({ banners }: BannerCarouselProps) {
             {/* Indicators */}
             <div className="absolute bottom-4 left-0 right-0">
                 <div className="flex items-center justify-center gap-2">
-                    {banners.map((_, index) => (
+                    {banners?.map((_, index) => (
                         <button
                             key={index}
                             className={cn(

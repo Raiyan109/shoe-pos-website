@@ -8,12 +8,9 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const products = await getProducts()
   const categories = await getCategories()
   const {id} = await params
-  console.log(products);
   const product = products?.data?.find((p:Product) => p?._id === id)
-  const category = categories?.data?.find((c:Category) => c._id === product.category_id?._id)
-  console.log(category);
-  
-
+  const category = categories?.data?.find((c:Category) => c?._id === product?.category_id?._id)
+ 
   return (
     <>
     <ProductDetailsPage product={product} category={category} />
