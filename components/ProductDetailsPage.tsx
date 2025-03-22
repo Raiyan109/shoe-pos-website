@@ -12,37 +12,45 @@ import { Category, Product, Variation } from '@/lib/types'
 
 
 
-const ProductDetailsPage = ({ product,category }: { product: Product, category:Category }) => {
-  
-  if (!product) {
-    notFound()
-  }
-
-  // Check if variations exist before mapping
-    const variationDiscountPrices = product?.variations
-      ? product.variations
-          .map((variation: Variation) => variation?.variation_discount_price)
-          .filter((price): price is number => price !== undefined)
-      : [];
-  
-    const variationBuyingPrices = product?.variations
-      ? product.variations
-          .map((variation: Variation) => variation?.variation_price)
-          .filter((price): price is number => price !== undefined)
-      : [];
-  
-    // Get the first available discount & buying price
-    const firstDiscountPrice = variationDiscountPrices.length > 0 ? variationDiscountPrices[0] : undefined;
-    const firstBuyingPrice = variationBuyingPrices.length > 0 ? variationBuyingPrices[0] : undefined;
-
+const ProductDetailsPage = ({ product, category }: { product: Product, category: Category }) => {
   const [quantity, setQuantity] = useState(1)
   const [currentImage, setCurrentImage] = useState(product?.thumbnail_image)
+  const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string | null>>({});
   // const [selectedColor, setSelectedColor] = useState(product.colors[0])
   // const [selectedSize, setSelectedSize] = useState(product.sizes[0])
 
   const incrementQuantity = () => setQuantity((prev) => prev + 1)
   const decrementQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))
 
+
+  if (!product) {
+    notFound()
+  }
+
+  // Check if variations exist before mapping
+  const variationDiscountPrices = product?.variations
+    ? product.variations
+      .map((variation: Variation) => variation?.variation_discount_price)
+      .filter((price): price is number => price !== undefined)
+    : [];
+
+  const variationBuyingPrices = product?.variations
+    ? product.variations
+      .map((variation: Variation) => variation?.variation_price)
+      .filter((price): price is number => price !== undefined)
+    : [];
+
+  // Get the first available discount & buying price
+  const firstDiscountPrice = variationDiscountPrices.length > 0 ? variationDiscountPrices[0] : undefined;
+  const firstBuyingPrice = variationBuyingPrices.length > 0 ? variationBuyingPrices[0] : undefined;
+
+
+  const handleSelect = (attributeName: string, value: string) => {
+    setSelectedAttributes((prev) => ({
+      ...prev,
+      [attributeName]: value,
+    }));
+  };
   // const handleOrder = () => {
   //   sendOrderToWhatsApp({
   //     productName: product?.product_name,
@@ -65,12 +73,9 @@ const ProductDetailsPage = ({ product,category }: { product: Product, category:C
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         {/* Product Images */}
-        {/* <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
-          <Image src={product?.thumbnail_image || "/placeholder.svg"} alt={product?.product_name} fill className="object-cover" />
-        </div> */}
         <div className="space-y-4">
           <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
-          <Image src={currentImage || "/placeholder.svg"} alt={product?.product_name} fill className="object-cover" />
+            <Image src={currentImage || "/placeholder.svg"} alt={product?.product_name} fill className="object-cover" />
           </div>
 
           {/* Additional Images */}
@@ -79,9 +84,8 @@ const ProductDetailsPage = ({ product,category }: { product: Product, category:C
               {/* Main thumbnail */}
               <button
                 onClick={() => setCurrentImage(product?.thumbnail_image)}
-                className={`flex-shrink-0 relative w-20 h-20 rounded-md overflow-hidden border-2 ${
-                  currentImage === product?.thumbnail_image ? "border-[#ff6600]" : "border-transparent"
-                }`}
+                className={`flex-shrink-0 relative w-20 h-20 rounded-md overflow-hidden border-2 ${currentImage === product?.thumbnail_image ? "border-[#ff6600]" : "border-transparent"
+                  }`}
               >
                 <Image
                   src={product?.thumbnail_image || "/placeholder.svg"}
@@ -96,9 +100,8 @@ const ProductDetailsPage = ({ product,category }: { product: Product, category:C
                 <button
                   key={img._id}
                   onClick={() => setCurrentImage(img?.additional_image || '')}
-                  className={`flex-shrink-0 relative w-20 h-20 rounded-md overflow-hidden border-2 ${
-                    currentImage === img.additional_image ? "border-[#ff6600]" : "border-transparent"
-                  }`}
+                  className={`flex-shrink-0 relative w-20 h-20 rounded-md overflow-hidden border-2 ${currentImage === img.additional_image ? "border-[#ff6600]" : "border-transparent"
+                    }`}
                 >
                   <Image
                     src={img.additional_image || "/placeholder.svg"}
@@ -115,7 +118,8 @@ const ProductDetailsPage = ({ product,category }: { product: Product, category:C
         {/* Product Details */}
         <div>
           <h1 className="font-poppins text-3xl font-bold text-[#222222] mb-2">{product?.product_name}</h1>
-          <div className="flex items-center gap-2 mb-4">
+          {/* Reviews */}
+          {/* <div className="flex items-center gap-2 mb-4">
             <div className="flex items-center">
               {[1, 2, 3, 4, 5].map((star) => (
                 <svg key={star} className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
@@ -124,12 +128,13 @@ const ProductDetailsPage = ({ product,category }: { product: Product, category:C
               ))}
             </div>
             <span className="font-inter text-sm text-[#666666]">(24 reviews)</span>
-          </div>
+          </div> */}
 
+          {/* Product price */}
           <div className="font-poppins text-2xl font-bold text-[#ff6600] mb-6">
-          {product?.product_price ? (
+            {product?.product_price ? (
               `$${product?.product_price}`
-            ) : firstDiscountPrice && firstDiscountPrice >0  ? (
+            ) : firstDiscountPrice && firstDiscountPrice > 0 ? (
               `$${firstDiscountPrice}`
             ) : (
               "0"
@@ -141,13 +146,96 @@ const ProductDetailsPage = ({ product,category }: { product: Product, category:C
             )}
           </div>
 
+          {/* Product Description */}
           <div className="font-inter text-[#666666] mb-6">{parse(product?.description)}</div>
 
+          {/* {product?.attributes_details && product?.attributes_details.map((attr) => (
+            <div className="mb-6" key={attr?._id}>
+              <h3 className="font-poppins text-sm font-medium text-[#444444] mb-3">{attr?.attribute_name}</h3>
+              <div className="flex gap-3">
+                {attr?.attribute_values && attr?.attribute_values.map((value) => (
+                  <button
+                    key={value?._id}
+                    onClick={() => setSelectedAttr(value)}
+                    className={`w-10 h-10 rounded-full border-2 ${selectedAttr === value ? "border-[#ff6600]" : "border-transparent"
+                      }`}
+                  >
+                    <span className="block w-full h-full rounded-full" style={{ backgroundColor: 'orange' }} />
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))} */}
+          <div>
+            {product?.attributes_details?.map((attr) => (
+              <div className="mb-6" key={attr?._id}>
+                <h3 className="font-poppins text-sm font-medium text-[#444444] mb-3">
+                  {attr?.attribute_name}
+                </h3>
+
+                <div className="flex gap-3">
+                  {attr?.attribute_values?.map((value) => {
+                    const isSelected = selectedAttributes[attr.attribute_name ?? ''] === value.attribute_value_name;
+                    console.log();
+
+                    if (attr.attribute_name && attr.attribute_name.toLowerCase() === "color") {
+                      return (
+                        <button
+                          key={value?._id}
+                          onClick={() => {
+                            if (attr?.attribute_name && value?.attribute_value_name) {
+                              handleSelect(attr.attribute_name, value.attribute_value_name);
+                            }
+                          }}
+                          className={`w-10 h-10 rounded-full border-2 cursor-pointer ${isSelected ? "border-[#ff6600]" : "border-transparent"}`}
+                        >
+                          <span
+                            className="block w-full h-full rounded-full"
+                            style={{ backgroundColor: value.attribute_value_name && value.attribute_value_name.toLowerCase() }}
+                          />
+                        </button>
+                      );
+                    } else if (attr.attribute_name && attr.attribute_name.toLowerCase() === "size") {
+                      return (
+                        <button
+                          key={value?._id}
+                          onClick={() => {
+                            if (attr?.attribute_name && value?.attribute_value_name) {
+                              handleSelect(attr.attribute_name, value.attribute_value_name);
+                            }
+                          }}
+                          className={`w-10 h-10 flex items-center justify-center rounded border cursor-pointer ${isSelected ? "border-[#ff6600] bg-[#ff6600]/10 text-[#ff6600]" : "border-gray-300 text-[#666666]"
+                            }`}
+                        >
+                          {value.attribute_value_name}
+                        </button>
+                      );
+                    } else {
+                      return (
+                        <button
+                          key={value?._id}
+                          onClick={() => {
+                            if (attr?.attribute_name && value?.attribute_value_name) {
+                              handleSelect(attr.attribute_name, value.attribute_value_name);
+                            }
+                          }}
+                          className={`px-3 py-1 border rounded cursor-pointer ${isSelected ? "border-[#ff6600] bg-[#ff6600]/10 text-[#ff6600]" : "border-gray-300 text-[#666666]"
+                            }`}
+                        >
+                          {value.attribute_value_name}
+                        </button>
+                      );
+                    }
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
           {/* Color Selection */}
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <h3 className="font-poppins text-sm font-medium text-[#444444] mb-3">Color</h3>
             <div className="flex gap-3">
-              {/* {product.colors.map((color) => (
+              {product.colors.map((color) => (
                 <button
                   key={color}
                   onClick={() => setSelectedColor(color)}
@@ -156,15 +244,15 @@ const ProductDetailsPage = ({ product,category }: { product: Product, category:C
                 >
                   <span className="block w-full h-full rounded-full" style={{ backgroundColor: color }} />
                 </button>
-              ))} */}
+              ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Size Selection */}
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <h3 className="font-poppins text-sm font-medium text-[#444444] mb-3">Size</h3>
             <div className="flex gap-3">
-              {/* {product.sizes.map((size) => (
+              {product.sizes.map((size) => (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
@@ -175,9 +263,9 @@ const ProductDetailsPage = ({ product,category }: { product: Product, category:C
                 >
                   {size}
                 </button>
-              ))} */}
+              ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Quantity */}
           <div className="mb-8">

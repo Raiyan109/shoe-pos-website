@@ -1,8 +1,10 @@
 interface AttributeValue {
+  _id: string;
   attribute_value_name?: string;
 }
 
 export interface Attribute {
+  _id: string;
   attribute_name?: string;
   attribute_values?: AttributeValue[];
 }
