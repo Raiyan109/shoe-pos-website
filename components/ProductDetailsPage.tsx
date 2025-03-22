@@ -51,16 +51,34 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
       [attributeName]: value,
     }));
   };
-  // const handleOrder = () => {
-  //   sendOrderToWhatsApp({
-  //     productName: product?.product_name,
-  //     productId: product?._id,
-  //     price: product?.product_price,
-  //     quantity,
-  //     // color: selectedColor,
-  //     // size: selectedSize,
-  //   })
-  // }
+
+  const handleOrder = () => {
+    // Determine the price based on whether product_price exists or we need to use variations
+    let price: number
+
+    if (product?.product_price) {
+      // If product has a direct price, use it
+      price = product.product_price
+    } else if (product?.variations && product.variations.length > 0) {
+      // If product has variations, take the first variation's discount price
+      // Use the first non-undefined price or default to 0
+      const firstVariationPrice = product.variations[0]?.variation_discount_price
+      price = typeof firstVariationPrice === "number" ? firstVariationPrice : 0
+    } else {
+      // Fallback price if neither is available
+      price = 0
+    }
+    console.log(selectedAttributes);
+
+    sendOrderToWhatsApp({
+      productName: product?.product_name,
+      productId: product?._id,
+      price: price,
+      quantity,
+      selectedAttribute: selectedAttributes
+    })
+  }
+
   return (
     <div className="container mx-auto px-4 py-12">
       <Link
@@ -176,7 +194,6 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
                 <div className="flex gap-3">
                   {attr?.attribute_values?.map((value) => {
                     const isSelected = selectedAttributes[attr.attribute_name ?? ''] === value.attribute_value_name;
-                    console.log();
 
                     if (attr.attribute_name && attr.attribute_name.toLowerCase() === "color") {
                       return (
@@ -231,51 +248,17 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
               </div>
             ))}
           </div>
-          {/* Color Selection */}
-          {/* <div className="mb-6">
-            <h3 className="font-poppins text-sm font-medium text-[#444444] mb-3">Color</h3>
-            <div className="flex gap-3">
-              {product.colors.map((color) => (
-                <button
-                  key={color}
-                  onClick={() => setSelectedColor(color)}
-                  className={`w-10 h-10 rounded-full border-2 ${selectedColor === color ? "border-[#ff6600]" : "border-transparent"
-                    }`}
-                >
-                  <span className="block w-full h-full rounded-full" style={{ backgroundColor: color }} />
-                </button>
-              ))}
-            </div>
-          </div> */}
 
-          {/* Size Selection */}
-          {/* <div className="mb-6">
-            <h3 className="font-poppins text-sm font-medium text-[#444444] mb-3">Size</h3>
-            <div className="flex gap-3">
-              {product.sizes.map((size) => (
-                <button
-                  key={size}
-                  onClick={() => setSelectedSize(size)}
-                  className={`w-10 h-10 flex items-center justify-center rounded border ${selectedSize === size
-                      ? "border-[#ff6600] bg-[#ff6600]/10 text-[#ff6600]"
-                      : "border-gray-300 text-[#666666]"
-                    }`}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-          </div> */}
 
           {/* Quantity */}
           <div className="mb-8">
             <h3 className="font-poppins text-sm font-medium text-[#444444] mb-3">Quantity</h3>
             <div className="flex items-center">
-              <Button variant="outline" size="icon" onClick={decrementQuantity} className="h-10 w-10 rounded-r-none">
+              <Button variant="outline" size="icon" onClick={decrementQuantity} className="h-10 w-10 rounded-r-none cursor-pointer">
                 <Minus className="h-4 w-4" />
               </Button>
               <div className="h-10 w-14 flex items-center justify-center border-y border-input">{quantity}</div>
-              <Button variant="outline" size="icon" onClick={incrementQuantity} className="h-10 w-10 rounded-l-none">
+              <Button variant="outline" size="icon" onClick={incrementQuantity} className="h-10 w-10 rounded-l-none  cursor-pointer">
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
@@ -283,7 +266,7 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
 
           {/* Order Button */}
           <Button
-            // onClick={handleOrder}
+            onClick={handleOrder}
             size="lg"
             className="w-full bg-[#ff6600] hover:bg-[#ff6600]/90 text-white font-medium transition-transform hover:scale-105"
           >
@@ -291,10 +274,10 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
           </Button>
 
           {/* Share */}
-          <Button variant="ghost" size="sm" className="mt-4 text-[#666666]">
+          {/* <Button variant="ghost" size="sm" className="mt-4 text-[#666666]">
             <Share2 className="mr-2 h-4 w-4" />
             Share this product
-          </Button>
+          </Button> */}
         </div>
       </div>
 

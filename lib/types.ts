@@ -84,9 +84,8 @@ export interface Product {
   
   export interface OrderDetails {
     productName: string
-    productId: string
+    productId: string | undefined
     price: number
     quantity: number
-    color: string
-    size: string
+    selectedAttribute: Record<string, string | null>
   }
