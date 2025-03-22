@@ -67,7 +67,7 @@ export interface Product {
   }
 
   export interface Variation {
-    _id?: any;
+    _id?: string;
     variation_name: string;
     product_id: string;
   variation_price: number;
