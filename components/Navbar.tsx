@@ -3,11 +3,54 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Menu, Search } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
+// import { Icons } from "@/components/icons"
+import {
+    NavigationMenu,
+    NavigationMenuContent,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    NavigationMenuTrigger,
+    navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
+import * as React from "react"
+
+const components: { title: string; href: string; }[] = [
+    {
+        title: "Alert Dialog",
+        href: "/docs/primitives/alert-dialog",
+       
+    },
+    {
+        title: "Hover Card",
+        href: "/docs/primitives/hover-card",
+        
+    },
+    {
+        title: "Progress",
+        href: "/docs/primitives/progress",
+       
+    },
+    {
+        title: "Scroll-area",
+        href: "/docs/primitives/scroll-area",
+        
+    },
+    {
+        title: "Tabs",
+        href: "/docs/primitives/tabs",
+       
+    },
+    {
+        title: "Tooltip",
+        href: "/docs/primitives/tooltip",
+        
+    },
+]
 
 export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false)
@@ -38,7 +81,7 @@ export default function Navbar() {
 
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex items-center space-x-8">
-                        <Link href="/" className="font-inter text-[#444444] hover:text-[#ff6600] transition-colors">
+                        {/* <Link href="/" className="font-inter text-[#444444] hover:text-[#ff6600] transition-colors">
                             Home
                         </Link>
                         <Link href="/categories" className="font-inter text-[#444444] hover:text-[#ff6600] transition-colors">
@@ -49,8 +92,36 @@ export default function Navbar() {
                         </Link>
                         <Link href="#" className="font-inter text-[#444444] hover:text-[#ff6600] transition-colors">
                             Contact
-                        </Link>
+                        </Link> */}
+                        <NavigationMenu>
+                        <NavigationMenuList>
+                        <NavigationMenuItem>
+                                <Link href="/" legacyBehavior passHref>
+                                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                                        Home
+                                    </NavigationMenuLink>
+                                </Link>
+                            </NavigationMenuItem>
+                            <NavigationMenuItem>
+                                <NavigationMenuTrigger>Categories</NavigationMenuTrigger>
+                                <NavigationMenuContent>
+                                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                                        {components.map((component) => (
+                                            <ListItem
+                                                key={component.title}
+                                                title={component.title}
+                                                href={component.href}
+                                            >
+                                                {/* {component.description} */}
+                                            </ListItem>
+                                        ))}
+                                    </ul>
+                                </NavigationMenuContent>
+                            </NavigationMenuItem>
+                        </NavigationMenuList>
+                    </NavigationMenu>
                     </nav>
+                    
 
                     {/* Search and Mobile Menu */}
                     <div className="flex items-center space-x-4">
@@ -75,7 +146,7 @@ export default function Navbar() {
                                     </div>
 
                                     <div className="mb-6">
-                                        <Input placeholder="Search products..." className="font-inter" style={{width: '250px'}} />
+                                        <Input placeholder="Search products..." className="font-inter" style={{ width: '250px' }} />
                                     </div>
 
                                     <nav className="flex flex-col space-y-6">
@@ -105,3 +176,28 @@ export default function Navbar() {
     )
 }
 
+const ListItem = React.forwardRef<
+    React.ElementRef<"a">,
+    React.ComponentPropsWithoutRef<"a">
+>(({ className, title, children, ...props }, ref) => {
+    return (
+        <li>
+            <NavigationMenuLink asChild>
+                <a
+                    ref={ref}
+                    className={cn(
+                        "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+                        className
+                    )}
+                    {...props}
+                >
+                    <div className="text-sm font-medium leading-none">{title}</div>
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                        {children}
+                    </p>
+                </a>
+            </NavigationMenuLink>
+        </li>
+    )
+})
+ListItem.displayName = "ListItem"
