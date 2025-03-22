@@ -5,8 +5,9 @@ import { categories, products } from "@/lib/data"
 import ProductCard from "@/components/ProductCard"
 import { ProductFilters } from "@/components/ProductFilters"
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const category = categories.find((c) => c.slug === params.slug)
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const {slug} = await params
+  const category = categories.find((c) => c.category_slug === slug)
 
   if (!category) {
     return {
@@ -15,25 +16,25 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 
   return {
-    title: `${category.name} | E-commerce Store`,
-    description: `Browse our collection of ${category.name}`,
+    title: `${category?.category_name} | E-commerce Store`,
+    description: `Browse our collection of ${category?.category_name}`,
   }
 }
 
-export default function CategoryPage({ params }: { params: { slug: string } }) {
-  const category = categories.find((c) => c.slug === params.slug)
+export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
+  const {slug} = await params
+  const category = categories.find((c) => c?.category_slug === slug)
 
   if (!category) {
     notFound()
   }
 
-  const categoryProducts = products.filter((product) => product.categoryId === category.id)
+  const categoryProducts = products.filter((product) => product.categoryId === category?._id)
 
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="mb-8">
-        <h1 className="font-poppins text-3xl md:text-4xl font-bold text-[#222222] mb-4">{category.name}</h1>
-        <p className="font-inter text-[#666666]">{category.description}</p>
+        <h1 className="font-poppins text-3xl md:text-4xl font-bold text-[#222222] mb-4">{category?.category_name}</h1>
       </div>
 
       <div className="flex flex-col md:flex-row gap-8">

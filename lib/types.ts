@@ -13,12 +13,11 @@ export interface Product {
   }
   
   export interface Category {
-    id: string
-    name: string
-    slug: string
-    description: string
-    image: string
-    productCount: number
+    _id: string
+    category_name: string
+    category_slug: string
+    category_logo: string
+    // productCount: number
   }
   
   export interface OrderDetails {
@@ -29,5 +28,3 @@ export interface Product {
     color: string
     size: string
   }
-  
-  

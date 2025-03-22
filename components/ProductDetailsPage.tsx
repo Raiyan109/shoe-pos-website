@@ -10,39 +10,41 @@ import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 import Image from 'next/image'
 
-const ProductDetailsPage = ({id}: {id:string}) => {
-    const product = products.find((p) => p.id === id)
-    
-      if (!product) {
-        notFound()
-      }
-    
-      const category = categories.find((c) => c.id === product.categoryId)
-      const [quantity, setQuantity] = useState(1)
-      const [selectedColor, setSelectedColor] = useState(product.colors[0])
-      const [selectedSize, setSelectedSize] = useState(product.sizes[0])
-    
-      const incrementQuantity = () => setQuantity((prev) => prev + 1)
-      const decrementQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))
-    
-      const handleOrder = () => {
-        sendOrderToWhatsApp({
-          productName: product.name,
-          productId: product.id,
-          price: product.price,
-          quantity,
-          color: selectedColor,
-          size: selectedSize,
-        })
-      }
+const ProductDetailsPage = ({ id }: { id: string }) => {
+  console.log(id);
+
+  const product = products.find((p) => p.id === id)
+
+  if (!product) {
+    notFound()
+  }
+
+  const category = categories.find((c) => c._id === product.categoryId)
+  const [quantity, setQuantity] = useState(1)
+  const [selectedColor, setSelectedColor] = useState(product.colors[0])
+  const [selectedSize, setSelectedSize] = useState(product.sizes[0])
+
+  const incrementQuantity = () => setQuantity((prev) => prev + 1)
+  const decrementQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))
+
+  const handleOrder = () => {
+    sendOrderToWhatsApp({
+      productName: product.name,
+      productId: product.id,
+      price: product.price,
+      quantity,
+      color: selectedColor,
+      size: selectedSize,
+    })
+  }
   return (
     <div className="container mx-auto px-4 py-12">
       <Link
-        href={`/categories/${category?.slug}`}
+        href={`/categories/${category?.category_slug}`}
         className="inline-flex items-center font-inter text-[#666666] hover:text-[#ff6600] mb-8"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to {category?.name}
+        Back to {category?.category_name}
       </Link>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -82,9 +84,8 @@ const ProductDetailsPage = ({id}: {id:string}) => {
                 <button
                   key={color}
                   onClick={() => setSelectedColor(color)}
-                  className={`w-10 h-10 rounded-full border-2 ${
-                    selectedColor === color ? "border-[#ff6600]" : "border-transparent"
-                  }`}
+                  className={`w-10 h-10 rounded-full border-2 ${selectedColor === color ? "border-[#ff6600]" : "border-transparent"
+                    }`}
                 >
                   <span className="block w-full h-full rounded-full" style={{ backgroundColor: color }} />
                 </button>
@@ -100,11 +101,10 @@ const ProductDetailsPage = ({id}: {id:string}) => {
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
-                  className={`w-10 h-10 flex items-center justify-center rounded border ${
-                    selectedSize === size
+                  className={`w-10 h-10 flex items-center justify-center rounded border ${selectedSize === size
                       ? "border-[#ff6600] bg-[#ff6600]/10 text-[#ff6600]"
                       : "border-gray-300 text-[#666666]"
-                  }`}
+                    }`}
                 >
                   {size}
                 </button>

@@ -5,12 +5,13 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import ProductCard from "@/components/ProductCard"
 import BannerCarousel from "@/components/BannerCarousel"
-import { featuredProducts, categories } from "@/lib/data"
+import { featuredProducts } from "@/lib/data"
+import { Category } from "@/lib/types"
 
 // Function to fetch banners from API
 async function getBanners() {
   try {
-    const baseUrl = process.env.BASE_URL || "http://localhost:5000/api/v1"
+    const baseUrl = process.env.BASE_URL 
     const res = await fetch(`${baseUrl}/banner`, {
       cache: "no-store",
     })
@@ -25,6 +26,20 @@ async function getBanners() {
     console.error("Error fetching banners:", error)
     // Return fallback banners in case of error
     return getFallbackBanners()
+  }
+}
+
+// Function to fetch categories from API
+async function getCategories(){
+  try {
+    const baseUrl = process.env.BASE_URL 
+    const res = await fetch(`${baseUrl}/category`, {
+      cache: "no-store",
+    })
+
+    return await res.json()
+  } catch (error) {
+    console.error("Error fetching categories:", error)
   }
 }
 
@@ -57,6 +72,7 @@ function getFallbackBanners() {
 
 export default async function Home() {
   const banners = await getBanners()
+  const categories = await getCategories()
 
   return (
     <main className="flex-1">
@@ -69,20 +85,20 @@ export default async function Home() {
       <section className="container mx-auto px-4 py-16">
         <h2 className="font-poppins text-3xl font-bold text-[#222222] mb-8">Shop by Category</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {categories.map((category) => (
+          {categories?.data?.map((category: Category) => (
             <Link
-              key={category.id}
-              href={`/categories/${category.slug}`}
+              key={category?._id}
+              href={`/categories/${category?.category_slug}`}
               className="group relative h-64 overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
             >
               <Image
-                src={category.image || "/placeholder.svg"}
-                alt={category.name}
+                src={category?.category_logo || "/placeholder.svg"}
+                alt={category?.category_name}
                 fill
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
-                <h3 className="font-poppins text-xl font-semibold text-white p-6">{category.name}</h3>
+                <h3 className="font-poppins text-xl font-semibold text-white p-6">{category?.category_name}</h3>
               </div>
             </Link>
           ))}
