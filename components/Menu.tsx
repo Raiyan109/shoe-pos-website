@@ -18,7 +18,7 @@ export async function MenuNav() {
     const categories = await getCategories()
     return (
         <>
-            <Navbar />
+            <Navbar categories={categories?.data} />
         </>
     )
 }

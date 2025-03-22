@@ -18,6 +18,7 @@ import {
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import * as React from "react"
+import { Category } from "@/lib/types"
 
 const components: { title: string; href: string; }[] = [
     {
@@ -52,7 +53,7 @@ const components: { title: string; href: string; }[] = [
     },
 ]
 
-export default function Navbar() {
+export default function Navbar({categories}: {categories: Category[]}) {
     const [isScrolled, setIsScrolled] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
@@ -106,11 +107,11 @@ export default function Navbar() {
                                 <NavigationMenuTrigger>Categories</NavigationMenuTrigger>
                                 <NavigationMenuContent>
                                     <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                                        {components.map((component) => (
+                                        {categories.map((component:Category) => (
                                             <ListItem
-                                                key={component.title}
-                                                title={component.title}
-                                                href={component.href}
+                                                key={component?._id}
+                                                title={component?.category_name}
+                                                href={`/categories/${component?.category_slug}`}
                                             >
                                                 {/* {component.description} */}
                                             </ListItem>
