@@ -34,6 +34,20 @@ async function getProducts(){
   }
 }
 
+// Function to fetch products from API
+async function getBrands(){
+  try {
+    const baseUrl = process.env.BASE_URL 
+    const res = await fetch(`${baseUrl}/brand`, {
+      cache: "no-store",
+    })
+
+    return await res.json()
+  } catch (error) {
+    console.error("Error fetching brands:", error)
+  }
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const categories = await getCategories()
   const {slug} = await params
@@ -54,6 +68,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const categories = await getCategories()
   const products = await getProducts()
+  const brands = await getBrands()
   const {slug} = await params
   const category = categories?.data?.find((c:Category) => c?.category_slug === slug)
   
@@ -74,7 +89,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-64 shrink-0">
-          <ProductFilters />
+          <ProductFilters brands={brands?.data} />
         </div>
 
         <div className="flex-1">

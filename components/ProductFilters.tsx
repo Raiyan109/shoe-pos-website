@@ -8,8 +8,9 @@ import { Slider } from "@/components/ui/slider"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import { Brand } from "@/lib/types"
 
-export function ProductFilters() {
+export function ProductFilters({brands}: {brands:Brand[]}) {
   const [priceRange, setPriceRange] = useState([0, 500])
 
   return (
@@ -23,7 +24,7 @@ export function ProductFilters() {
       </div>
 
       <Accordion type="multiple" defaultValue={["price", "color", "size"]} className="w-full">
-        <AccordionItem value="price">
+        {/* <AccordionItem value="price">
           <AccordionTrigger className="font-poppins text-[#444444]">Price Range</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-4 pt-2">
@@ -41,9 +42,9 @@ export function ProductFilters() {
               </div>
             </div>
           </AccordionContent>
-        </AccordionItem>
+        </AccordionItem> */}
 
-        <AccordionItem value="color">
+        {/* <AccordionItem value="color">
           <AccordionTrigger className="font-poppins text-[#444444]">Color</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-2">
@@ -57,9 +58,9 @@ export function ProductFilters() {
               ))}
             </div>
           </AccordionContent>
-        </AccordionItem>
+        </AccordionItem> */}
 
-        <AccordionItem value="size">
+        {/* <AccordionItem value="size">
           <AccordionTrigger className="font-poppins text-[#444444]">Size</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-2">
@@ -73,20 +74,20 @@ export function ProductFilters() {
               ))}
             </div>
           </AccordionContent>
-        </AccordionItem>
+        </AccordionItem> */}
 
         <AccordionItem value="brand">
           <AccordionTrigger className="font-poppins text-[#444444]">Brand</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-2">
-              {["Brand A", "Brand B", "Brand C", "Brand D"].map((brand) => (
-                <div key={brand} className="flex items-center space-x-2">
-                  <Checkbox id={`brand-${brand.toLowerCase().replace(/\s+/g, "-")}`} />
+              {brands?.map((brand) => (
+                <div key={brand?._id} className="flex items-center space-x-2">
+                  <Checkbox id={`brand-${brand?.brand_name.toLowerCase().replace(/\s+/g, "-")}`} />
                   <Label
-                    htmlFor={`brand-${brand.toLowerCase().replace(/\s+/g, "-")}`}
+                    htmlFor={`brand-${brand?.brand_name.toLowerCase().replace(/\s+/g, "-")}`}
                     className="font-inter text-sm text-[#666666]"
                   >
-                    {brand}
+                    {brand?.brand_name}
                   </Label>
                 </div>
               ))}
