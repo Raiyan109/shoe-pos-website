@@ -24,11 +24,11 @@ export default function BannerCarousel({ banners }: BannerCarouselProps) {
     const [autoplay, setAutoplay] = useState(true)
 
     const next = () => {
-        setCurrent((current) => (current === banners.length - 1 ? 0 : current + 1))
+        setCurrent((current) => (current === banners?.length - 1 ? 0 : current + 1))
     }
 
     const prev = () => {
-        setCurrent((current) => (current === 0 ? banners.length - 1 : current - 1))
+        setCurrent((current) => (current === 0 ? banners?.length - 1 : current - 1))
     }
 
     useEffect(() => {
@@ -36,7 +36,7 @@ export default function BannerCarousel({ banners }: BannerCarouselProps) {
 
         const interval = setInterval(next, 5000)
         return () => clearInterval(interval)
-    }, [autoplay, banners.length])
+    }, [autoplay, banners?.length])
 
     // Pause autoplay on hover
     const handleMouseEnter = () => setAutoplay(false)

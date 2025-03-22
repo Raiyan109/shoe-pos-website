@@ -207,7 +207,7 @@ export default function Navbar({ categories, products }: { categories: Category[
                     {/* Search Results */}
                     {searchQuery.trim() !== "" && (
                         <div className="mt-4 max-h-[60vh] overflow-y-auto">
-                            {searchResults.length > 0 ? (
+                            {searchResults?.length > 0 ? (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                     {searchResults?.map((product) => {
                                         // Check if variations exist before mapping
@@ -224,8 +224,8 @@ export default function Navbar({ categories, products }: { categories: Category[
                                             : [];
 
                                         // Get the first available discount & buying price
-                                        const firstDiscountPrice = variationDiscountPrices.length > 0 ? variationDiscountPrices[0] : undefined;
-                                        const firstBuyingPrice = variationBuyingPrices.length > 0 ? variationBuyingPrices[0] : undefined;
+                                        const firstDiscountPrice = variationDiscountPrices?.length > 0 ? variationDiscountPrices[0] : undefined;
+                                        const firstBuyingPrice = variationBuyingPrices?.length > 0 ? variationBuyingPrices[0] : undefined;
                                         return (
                                             <Link
                                                 key={product?._id}

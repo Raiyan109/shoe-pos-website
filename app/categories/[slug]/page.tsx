@@ -55,7 +55,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             ))}
           </div>
 
-          {categoryProducts.length === 0 && (
+          {categoryProducts?.length === 0 && (
             <div className="text-center py-12">
               <h3 className="font-poppins text-xl font-semibold text-[#444444] mb-2">No products found</h3>
               <p className="font-inter text-[#666666]">Try adjusting your filters or check back later.</p>

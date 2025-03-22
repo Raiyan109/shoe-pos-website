@@ -41,8 +41,8 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
     : [];
 
   // Get the first available discount & buying price
-  const firstDiscountPrice = variationDiscountPrices.length > 0 ? variationDiscountPrices[0] : undefined;
-  const firstBuyingPrice = variationBuyingPrices.length > 0 ? variationBuyingPrices[0] : undefined;
+  const firstDiscountPrice = variationDiscountPrices?.length > 0 ? variationDiscountPrices[0] : undefined;
+  const firstBuyingPrice = variationBuyingPrices?.length > 0 ? variationBuyingPrices[0] : undefined;
 
 
   const handleSelect = (attributeName: string, value: string) => {
@@ -59,7 +59,7 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
     if (product?.product_price) {
       // If product has a direct price, use it
       price = product.product_price
-    } else if (product?.variations && product.variations.length > 0) {
+    } else if (product?.variations && product.variations?.length > 0) {
       // If product has variations, take the first variation's discount price
       // Use the first non-undefined price or default to 0
       const firstVariationPrice = product.variations[0]?.variation_discount_price
@@ -96,7 +96,7 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
           </div>
 
           {/* Additional Images */}
-          {product?.additional_images && product.additional_images.length > 0 && (
+          {product?.additional_images && product.additional_images?.length > 0 && (
             <div className="flex gap-2 overflow-x-auto pb-2">
               {/* Main thumbnail */}
               <button

@@ -873,7 +873,7 @@ export function getMockProductsResponse() {
     success: true,
     message: "Products fetched successfully (MOCK DATA)",
     data: products,
-    count: products.length,
+    count: products?.length,
   }
 }
 
@@ -883,7 +883,7 @@ export function getMockCategoriesResponse() {
     success: true,
     message: "Categories fetched successfully (MOCK DATA)",
     data: categories,
-    count: categories.length,
+    count: categories?.length,
   }
 }
 
