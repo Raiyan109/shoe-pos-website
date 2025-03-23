@@ -1,8 +1,11 @@
 import Image from "next/image"
 import Link from "next/link"
 import BannerCarousel from "@/components/BannerCarousel"
-import { Category } from "@/lib/types"
+import { Category, Product } from "@/lib/types"
 import { getBanners, getCategories, getProducts } from "@/lib/api"
+import ProductCard from "@/components/ProductCard"
+import { Button } from "@/components/ui/button"
+import { ArrowRight } from "lucide-react"
 
 interface IProps {
   _id: string
@@ -97,7 +100,7 @@ const featuredCategories = categories?.data?.slice(0, 4).map((category: Category
       </section>
 
       {/* Featured Products Section */}
-      {/* <section className="container mx-auto px-4 py-16 bg-gray-50">
+      <section className="container mx-auto px-4 py-16 bg-gray-50">
         <div className="flex justify-between items-center mb-8">
           <h2 className="font-poppins text-3xl font-bold text-[#222222]">Featured Products</h2>
           <Button
@@ -111,11 +114,11 @@ const featuredCategories = categories?.data?.slice(0, 4).map((category: Category
           </Button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {featuredProducts.map((product) => (
+          {products?.data?.slice(0, 4)?.map((product:Product) => (
             <ProductCard key={product._id} product={product} />
           ))}
         </div>
-      </section> */}
+      </section>
 
       {/* Testimonials Section */}
       {/* <section className="container mx-auto px-4 py-16">
