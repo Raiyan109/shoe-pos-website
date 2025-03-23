@@ -5,6 +5,7 @@ import { ProductFilters } from "@/components/ProductFilters"
 import { Category, Product } from "@/lib/types"
 import { getBrands, getCategories, getProducts } from "@/lib/api"
 import Image from "next/image"
+import CategoryComponent from "@/components/CategoryComponent"
 
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -69,26 +70,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         </p>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8">
-        <div className="w-full md:w-64 shrink-0">
-          <ProductFilters brands={brands?.data} products={products?.data} />
-        </div>
-
-        <div className="flex-1">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {categoryProducts?.map((product:Product) => (
-              <ProductCard key={product?._id} product={product} />
-            ))}
-          </div>
-
-          {categoryProducts?.length === 0 && (
-            <div className="text-center py-12">
-              <h3 className="font-poppins text-xl font-semibold text-[#444444] mb-2">No products found</h3>
-              <p className="font-inter text-[#666666]">Try adjusting your filters or check back later.</p>
-            </div>
-          )}
-        </div>
-      </div>
+     <CategoryComponent brands={brands} categoryProducts={categoryProducts} />
     </div>
   )
 }

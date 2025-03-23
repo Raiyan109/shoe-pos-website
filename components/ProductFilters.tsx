@@ -6,7 +6,14 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Brand, Product } from "@/lib/types"
 
-export function ProductFilters({ brands, products }: { brands: Brand[], products: Product[] }) {
+interface ProductFiltersProps {
+  brands: Brand[];
+  products: Product[];
+  onFilterChange: (attributeName: string, value: string, isChecked: boolean) => void;
+}
+
+
+export function ProductFilters({ brands, products, onFilterChange }: ProductFiltersProps) {
   // const [priceRange, setPriceRange] = useState([0, 500])
   const productAttributes = products?.map((product) => product?.attributes_details) || [];
 
@@ -16,7 +23,6 @@ export function ProductFilters({ brands, products }: { brands: Brand[], products
       values: attr?.attribute_values || []
     }))
   ).reduce((acc: Record<string, Set<string>>, attr) => {
-    console.log(attr);
     if (!attr || !attr.name) return acc; // Ensure attr is valid before using it
     if (!acc[attr.name]) {
       acc[attr.name] = new Set();
@@ -34,6 +40,8 @@ export function ProductFilters({ brands, products }: { brands: Brand[], products
     name,
     values: Array.from(values)
   }));
+
+  console.log(attributesArray);
 
   return (
     <div className="space-y-6">
@@ -76,7 +84,10 @@ export function ProductFilters({ brands, products }: { brands: Brand[], products
               <div className="space-y-2">
                 {values.map((value) => (
                   <div key={value} className="flex items-center space-x-2">
-                    <Checkbox id={`${name}-${value.toLowerCase()}`} />
+                    <Checkbox 
+                    id={`${name}-${value.toLowerCase()}`}
+                    onCheckedChange={(checked: boolean) => onFilterChange(name, value, checked)}
+                      />
                     <Label htmlFor={`${name}-${value.toLowerCase()}`} className="font-inter text-sm text-[#666666]">
                       {value}
                     </Label>
