@@ -71,7 +71,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-64 shrink-0">
-          <ProductFilters brands={brands?.data} />
+          <ProductFilters brands={brands?.data} products={products?.data} />
         </div>
 
         <div className="flex-1">
