@@ -3,6 +3,7 @@ import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import { MenuNav } from "@/components/Menu";
+import SiteSettings from "@/components/SiteSettings";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -32,6 +33,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${poppins.variable} font-sans min-h-screen flex flex-col`}
       >
+        <SiteSettings />
         <MenuNav />
         {children}
         <Footer />

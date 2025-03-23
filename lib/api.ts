@@ -89,3 +89,76 @@ export async function getBrands() {
     console.error("Error fetching brands:", error)
   }
 }
+
+
+// export async function getSettings() {
+//   try {
+//     const baseUrl = process.env.BASE_URL
+
+//     if (!baseUrl) {
+//       console.warn("BASE_URL environment variable is not set, using mock data")
+//       return getMockSettingsResponse()
+//     }
+
+//     console.log(`Fetching settings from: ${baseUrl}/settings`)
+
+//     // Add specific headers to handle CORS
+//     const res = await fetch(`${baseUrl}/settings`, {
+//       method: "GET",
+//       headers: {
+//         "Content-Type": "application/json",
+//         // Add any authentication headers if needed
+//         // 'Authorization': 'Bearer your-token-here',
+//       },
+//       cache: "no-store",
+//       // Add mode: 'cors' explicitly
+//       mode: "cors",
+//     })
+
+//     if (!res.ok) {
+//       console.warn(`API returned status ${res.status}, using mock data`)
+//       return getMockSettingsResponse()
+//     }
+
+//     return await res.json()
+//   } catch (error) {
+//     console.error("Error fetching site settings:", error)
+
+//     // Check specifically for CORS errors
+//     if (error instanceof TypeError && error.message.includes("CORS")) {
+//       console.warn(
+//         "CORS error detected. This might be because the settings endpoint has different CORS configuration than other endpoints.",
+//       )
+//     }
+
+//     console.info("Falling back to mock data")
+//     return getMockSettingsResponse()
+//   }
+// }
+
+// // Mock settings response
+// function getMockSettingsResponse() {
+//   console.log("Returning mock settings data")
+//   return {
+//     success: true,
+//     message: "Site settings fetched successfully (MOCK DATA)",
+//     data: [
+//       {
+//         _id: "settings1",
+//         title: "E-commerce Store | Quality Products",
+//         favicon: "/favicon.ico",
+//         logo: "/logo.png",
+//         footer_text: "© 2023 E-commerce Store. All rights reserved.",
+//         contact_email: "contact@example.com",
+//         contact_phone: "+1 (123) 456-7890",
+//         address: "123 Main Street, City, Country",
+//         social_media: {
+//           facebook: "https://facebook.com/ecommercestore",
+//           twitter: "https://twitter.com/ecommercestore",
+//           instagram: "https://instagram.com/ecommercestore",
+//         },
+//       },
+//     ],
+//   }
+// }
+
