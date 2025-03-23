@@ -2,12 +2,38 @@ import Image from "next/image"
 import Link from "next/link"
 import BannerCarousel from "@/components/BannerCarousel"
 import { Category } from "@/lib/types"
-import { getBanners, getCategories } from "@/lib/api"
+import { getBanners, getCategories, getProducts } from "@/lib/api"
 
+interface IProps {
+  _id: string
+  category_name: string
+  category_slug: string
+  category_logo: string
+  highlight: string
+  productCount: number
+}
 
 export default async function Home() {
   const banners = await getBanners()
   const categories = await getCategories()
+  const products = await getProducts()
+
+  // Group products by category ID and count them
+const productCounts: Record<string, number> = products?.data?.reduce((acc: Record<string, number>, product: { category_id: { _id: string } }) => {
+  const categoryId = product.category_id?._id;
+  if (categoryId) {
+    acc[categoryId] = (acc[categoryId] || 0) + 1;
+  }
+  return acc;
+}, {} as Record<string, number>);
+
+// Define featured categories with additional metadata
+const featuredCategories = categories?.data?.slice(0, 4).map((category: Category, index: number) => ({
+  ...category,
+  highlight: index === 0 ? "New Arrivals" : index === 1 ? "Best Sellers" : index === 2 ? "Trending" : "Popular",
+  productCount: productCounts[category._id] || 0, // Assign actual product count
+}));
+
 
   return (
     <main className="flex-1">
@@ -17,7 +43,7 @@ export default async function Home() {
       </section>
 
       {/* Categories Section */}
-      <section className="container mx-auto px-4 py-16">
+      {/* <section className="container mx-auto px-4 py-16">
         <h2 className="font-poppins text-3xl font-bold text-[#222222] mb-8">Shop by Category</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {categories?.data?.map((category: Category) => (
@@ -34,6 +60,36 @@ export default async function Home() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
                 <h3 className="font-poppins text-xl font-semibold text-white p-6">{category?.category_name}</h3>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section> */}
+
+      {/* Featured Categories Section */}
+      <section className="container mx-auto px-4 py-16">
+        <h2 className="font-poppins text-3xl font-bold text-[#222222] mb-8">Featured Collections</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {featuredCategories.map((category:IProps) => (
+            <Link
+              key={category._id}
+              href={`/categories/${category.category_slug}`}
+              className="group relative h-64 overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+            >
+              <Image
+                src={category.category_logo || "/placeholder.svg"}
+                alt={category.category_name}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end">
+                <div className="p-6">
+                  <span className="inline-block px-2 py-1 bg-[#ff6600] text-white text-xs font-medium rounded mb-2">
+                    {category.highlight}
+                  </span>
+                  <h3 className="font-poppins text-xl font-semibold text-white mb-1">{category.category_name}</h3>
+                  <p className="font-inter text-sm text-white/80">{category.productCount} products</p>
+                </div>
               </div>
             </Link>
           ))}
