@@ -53,7 +53,7 @@ export function ProductFilters({ brands, products, onFilterChange }: ProductFilt
         </Button>
       </div>
 
-      <Accordion type="multiple" defaultValue={["price", "color", "size"]} className="w-full">
+      <Accordion type="multiple" className="w-full">
         {/* <AccordionItem value="price">
           <AccordionTrigger className="font-poppins text-[#444444]">Price Range</AccordionTrigger>
           <AccordionContent>
