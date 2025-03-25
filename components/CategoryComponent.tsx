@@ -1,6 +1,6 @@
 'use client'
 
-import { Brand, Category, Product } from "@/lib/types"
+import { Brand,  Product } from "@/lib/types"
 import ProductCard from "./ProductCard"
 import { ProductFilters } from "./ProductFilters"
 import { useState } from "react"

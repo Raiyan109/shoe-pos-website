@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import BannerCarousel from "@/components/BannerCarousel"
-import { Category, Product } from "@/lib/types"
+import {  Product } from "@/lib/types"
 import { getBanners, getCategories, getProducts } from "@/lib/api"
 import ProductCard from "@/components/ProductCard"
 import { Button } from "@/components/ui/button"
@@ -12,30 +12,13 @@ interface IProps {
   category_name: string
   category_slug: string
   category_logo: string
-  highlight: string
-  productCount: number
+  total_product: number
 }
 
 export default async function Home() {
   const banners = await getBanners()
   const categories = await getCategories()
   const products = await getProducts()
-
-  // Group products by category ID and count them
-const productCounts: Record<string, number> = products?.data?.reduce((acc: Record<string, number>, product: { category_id: { _id: string } }) => {
-  const categoryId = product.category_id?._id;
-  if (categoryId) {
-    acc[categoryId] = (acc[categoryId] || 0) + 1;
-  }
-  return acc;
-}, {} as Record<string, number>);
-
-// Define featured categories with additional metadata
-const featuredCategories = categories?.data?.slice(0, 4).map((category: Category, index: number) => ({
-  ...category,
-  highlight: index === 0 ? "New Arrivals" : index === 1 ? "Best Sellers" : index === 2 ? "Trending" : "Popular",
-  productCount: productCounts[category._id] || 0, // Assign actual product count
-}));
 
 
   return (
@@ -73,7 +56,7 @@ const featuredCategories = categories?.data?.slice(0, 4).map((category: Category
       <section className="container mx-auto px-4 py-16">
         <h2 className="font-poppins text-3xl font-bold text-[#222222] mb-8">Featured Collections</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {featuredCategories.map((category:IProps) => (
+          {categories?.data?.map((category:IProps) => (
             <Link
               key={category._id}
               href={`/categories/${category.category_slug}`}
@@ -87,11 +70,8 @@ const featuredCategories = categories?.data?.slice(0, 4).map((category: Category
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end">
                 <div className="p-6">
-                  <span className="inline-block px-2 py-1 bg-[#ff6600] text-white text-xs font-medium rounded mb-2">
-                    {category.highlight}
-                  </span>
                   <h3 className="font-poppins text-xl font-semibold text-white mb-1">{category.category_name}</h3>
-                  <p className="font-inter text-sm text-white/80">{category.productCount} products</p>
+                  <p className="font-inter text-sm text-white/80">{category?.total_product} products</p>
                 </div>
               </div>
             </Link>

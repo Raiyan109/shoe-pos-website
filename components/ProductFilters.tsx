@@ -13,7 +13,7 @@ interface ProductFiltersProps {
 }
 
 
-export function ProductFilters({ brands, products, onFilterChange }: ProductFiltersProps) {
+export function ProductFilters({ products, onFilterChange }: ProductFiltersProps) {
   // const [priceRange, setPriceRange] = useState([0, 500])
   const productAttributes = products?.map((product) => product?.attributes_details) || [];
 
@@ -40,8 +40,6 @@ export function ProductFilters({ brands, products, onFilterChange }: ProductFilt
     name,
     values: Array.from(values)
   }));
-
-  console.log(attributesArray);
 
   return (
     <div className="space-y-6">
