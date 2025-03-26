@@ -15,10 +15,10 @@ export function sendOrderToWhatsApp(orderDetails: OrderDetails) {
           *New Order*
           Product: ${productName}
           ID: ${productId}
-          Price: $${price.toFixed(2)}
+          Price: ${price.toFixed(2)}
           Quantity: ${quantity}
           ${attributeValues ? `Attributes: ${attributeValues}` : ""}
-          Total: $${(price * quantity).toFixed(2)}
+          Total: ${(price * quantity).toFixed(2)}
 `.trim()
 
   // Encode the message for WhatsApp

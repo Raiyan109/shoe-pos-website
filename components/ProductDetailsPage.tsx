@@ -46,6 +46,9 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
 
 
   const handleSelect = (attributeName: string, value: string) => {
+    console.log(attributeName, 'attribute name');
+    console.log(value, 'value');
+    
     setSelectedAttributes((prev) => ({
       ...prev,
       [attributeName]: value,
