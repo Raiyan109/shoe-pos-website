@@ -1,21 +1,36 @@
 'use client'
 import { sendOrderToWhatsApp } from '@/lib/whatsapp'
 import { notFound } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowLeft, Minus, Plus } from "lucide-react"
 import parse from "html-react-parser";
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 import Image from 'next/image'
-import { Category, Product, Variation } from '@/lib/types'
+import { Category, Product } from '@/lib/types'
 
 
 
 const ProductDetailsPage = ({ product, category }: { product: Product, category: Category }) => {
   const [quantity, setQuantity] = useState(1)
   const [currentImage, setCurrentImage] = useState(product?.thumbnail_image)
-  const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string | null>>({});
+  const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string | null>>(() => {
+    const initialAttributes: Record<string, string | null> = {};
+
+    if (product?.attributes_details) {
+      for (const attr of product.attributes_details) {
+        if (attr?.attribute_name && attr.attribute_values?.length) {
+          initialAttributes[attr.attribute_name] =
+            attr.attribute_values[0]?.attribute_value_name || null;
+        }
+      }
+    }
+
+    return initialAttributes;
+  });
+  const [selectedPrice, setSelectedPrice] = useState(product?.product_price || 0);
+  const [selectedDiscountPrice, setSelectedDiscountPrice] = useState(product?.product_discount_price || 0);
   // const [selectedColor, setSelectedColor] = useState(product.colors[0])
   // const [selectedSize, setSelectedSize] = useState(product.sizes[0])
 
@@ -27,28 +42,25 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
     notFound()
   }
 
-  // Check if variations exist before mapping
-  const variationDiscountPrices = product?.variations
-    ? product.variations
-      ?.map((variation: Variation) => variation?.variation_discount_price)
-      .filter((price): price is number => price !== undefined)
-    : [];
 
-  const variationBuyingPrices = product?.variations
-    ? product.variations
-      ?.map((variation: Variation) => variation?.variation_price)
-      .filter((price): price is number => price !== undefined)
-    : [];
+  const findMatchingVariation = useCallback(() => {
+    const selectedValues = product?.attributes_details?.map(
+      attr => selectedAttributes[attr.attribute_name ?? '']
+    );
 
-  // Get the first available discount & buying price
-  const firstDiscountPrice = variationDiscountPrices?.length > 0 ? variationDiscountPrices[0] : undefined;
-  const firstBuyingPrice = variationBuyingPrices?.length > 0 ? variationBuyingPrices[0] : undefined;
+    if (!selectedValues || selectedValues.some(value => !value)) return null;
 
+    const variationName = selectedValues.join('-');
+    return product?.variations?.find(v => v.variation_name === variationName);
+  }, [selectedAttributes, product]);
+
+  useEffect(() => {
+    const matchingVariation = findMatchingVariation();
+    setSelectedPrice(matchingVariation?.variation_price || product?.product_price || 0);
+    setSelectedDiscountPrice(matchingVariation?.variation_discount_price || product?.product_discount_price || 0)
+  }, [findMatchingVariation, product]);
 
   const handleSelect = (attributeName: string, value: string) => {
-    console.log(attributeName, 'attribute name');
-    console.log(value, 'value');
-    
     setSelectedAttributes((prev) => ({
       ...prev,
       [attributeName]: value,
@@ -71,7 +83,7 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
       // Fallback price if neither is available
       price = 0
     }
-  
+
     sendOrderToWhatsApp({
       productName: product?.product_name,
       productId: product?._id,
@@ -152,18 +164,17 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
 
           {/* Product price */}
           <div className="font-poppins text-2xl font-bold text-[#ff6600] mb-6">
-            {product?.product_price ? (
-              `$${product?.product_price}`
-            ) : firstDiscountPrice && firstDiscountPrice > 0 ? (
-              `$${firstDiscountPrice}`
-            ) : (
-              "0"
-            )}
-            {firstBuyingPrice && firstBuyingPrice > 0 ? (
-              <span className="ml-2 text-lg line-through text-[#666666]">${firstBuyingPrice}</span>
-            ) : (
-              <span className="ml-2 text-sm line-through text-[#666666]"></span>
-            )}
+            <div className="font-poppins text-2xl font-bold text-[#ff6600] mb-6">
+              {selectedDiscountPrice}
+              <span className="ml-2 text-lg line-through text-[#666666]">
+                  {selectedPrice}
+                </span>
+              {/* {product?.product_discount_price && product.product_discount_price !== selectedDiscountPrice && (
+                <span className="ml-2 text-lg line-through text-[#666666]">
+                  {selectedDiscountPrice}
+                </span>
+              )} */}
+            </div>
           </div>
 
           {/* Product Description */}
@@ -196,7 +207,6 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
                 <div className="flex gap-3">
                   {attr?.attribute_values?.map((value) => {
                     const isSelected = selectedAttributes[attr.attribute_name ?? ''] === value.attribute_value_name;
-
                     if (attr.attribute_name && attr.attribute_name.toLowerCase() === "color") {
                       return (
                         <button
