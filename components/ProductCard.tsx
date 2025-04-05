@@ -53,16 +53,21 @@ export default function ProductCard({ product }: { product: Product }) {
 
         <div className="flex items-center justify-between">
           <div className="font-poppins font-bold text-[#ff6600]">
-            {product?.product_price ? (
+            {new Intl.NumberFormat("en-IN").format(product?.product_price
+              ? product.product_price
+              : firstDiscountPrice && firstDiscountPrice > 0
+                ? firstDiscountPrice
+                : 0)}
+            {/* {product?.product_price ? (
               `$${product?.product_price}`
             ) : firstDiscountPrice && firstDiscountPrice > 0 ? (
               `$${firstDiscountPrice}`
             ) : (
               "0"
-            )}
+            )} */}
 
             {firstBuyingPrice && firstBuyingPrice > 0 ? (
-              <span className="ml-2 text-sm line-through text-[#666666]">${firstBuyingPrice}</span>
+              <span className="ml-2 text-sm line-through text-[#666666]">${new Intl.NumberFormat("en-IN").format(firstBuyingPrice)}</span>
             ) : (
               <span className="ml-2 text-sm line-through text-[#666666]"></span>
             )}
