@@ -4,6 +4,7 @@ import "./globals.css";
 import Footer from "@/components/Footer";
 import { MenuNav } from "@/components/Menu";
 import SiteSettings from "@/components/SiteSettings";
+import { Toaster } from "@/components/ui/sonner"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,6 +38,7 @@ export default function RootLayout({
         <MenuNav />
         {children}
         <Footer />
+        <Toaster />
       </body>
     </html>
   );

@@ -2,14 +2,14 @@
 import { sendOrderToWhatsApp } from '@/lib/whatsapp'
 import { notFound } from 'next/navigation'
 import React, { useCallback, useEffect, useState } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowLeft, Minus, Plus } from "lucide-react"
-import parse from "html-react-parser";
+// import parse from "html-react-parser";
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 import Image from 'next/image'
 import { Category, Product } from '@/lib/types'
-
+import { toast } from "sonner"
 
 
 const ProductDetailsPage = ({ product, category }: { product: Product, category: Category }) => {
@@ -31,12 +31,22 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
   });
   const [selectedPrice, setSelectedPrice] = useState(product?.product_price || 0);
   const [selectedDiscountPrice, setSelectedDiscountPrice] = useState(product?.product_discount_price || 0);
+  const [selectedQuantity, setSelectedQuantity] = useState(0);
   // const [selectedColor, setSelectedColor] = useState(product.colors[0])
   // const [selectedSize, setSelectedSize] = useState(product.sizes[0])
 
-  const incrementQuantity = () => setQuantity((prev) => prev + 1)
-  const decrementQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))
+  const incrementQuantity = () => {
+    if (quantity >= selectedQuantity) {
+      toast.error("Stock not available")
+      return
+    }
+    setQuantity((prev) => prev + 1)
+  }
+  const decrementQuantity = () => {
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1))
+  }
 
+  console.log(product?.variations.map((variation) => variation?.variation_quantity));
 
   if (!product) {
     notFound()
@@ -58,6 +68,7 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
     const matchingVariation = findMatchingVariation();
     setSelectedPrice(matchingVariation?.variation_price || product?.product_price || 0);
     setSelectedDiscountPrice(matchingVariation?.variation_discount_price || product?.product_discount_price || 0)
+    setSelectedQuantity(matchingVariation?.variation_quantity || 0)
   }, [findMatchingVariation, product]);
 
   const handleSelect = (attributeName: string, value: string) => {
@@ -103,84 +114,74 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
         Back to {category?.category_name}
       </Link>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-        {/* Product Images */}
-        <div className="space-y-4">
-          <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
-            <Image src={currentImage || "/placeholder.svg"} alt={product?.product_name} fill className="object-cover" />
-          </div>
+      <div className="flex justify-between flex-col lg:flex-row gap-16 lg:gap-56">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full lg:w-3/4">
+          {/* Product Images */}
+          <div className="space-y-4">
+            <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
+              <Image src={currentImage || "/placeholder.svg"} alt={product?.product_name} fill className="object-cover" />
+            </div>
 
-          {/* Additional Images */}
-          {product?.additional_images && product.additional_images?.length > 0 && (
-            <div className="flex gap-2 overflow-x-auto pb-2">
-              {/* Main thumbnail */}
-              <button
-                onClick={() => setCurrentImage(product?.thumbnail_image)}
-                className={`flex-shrink-0 relative w-20 h-20 rounded-md overflow-hidden border-2 ${currentImage === product?.thumbnail_image ? "border-[#ff6600]" : "border-transparent"
-                  }`}
-              >
-                <Image
-                  src={product?.thumbnail_image || "/placeholder.svg"}
-                  alt={`${product?.product_name} thumbnail`}
-                  fill
-                  className="object-cover"
-                />
-              </button>
-
-              {/* Additional images */}
-              {product.additional_images?.map((img) => (
+            {/* Additional Images */}
+            {product?.additional_images && product.additional_images?.length > 0 && (
+              <div className="flex gap-2 overflow-x-auto pb-2">
+                {/* Main thumbnail */}
                 <button
-                  key={img._id}
-                  onClick={() => setCurrentImage(img?.additional_image || '')}
-                  className={`flex-shrink-0 relative w-20 h-20 rounded-md overflow-hidden border-2 ${currentImage === img.additional_image ? "border-[#ff6600]" : "border-transparent"
+                  onClick={() => setCurrentImage(product?.thumbnail_image)}
+                  className={`flex-shrink-0 relative w-20 h-20 rounded-md overflow-hidden border-2 ${currentImage === product?.thumbnail_image ? "border-[#ff6600]" : "border-transparent"
                     }`}
                 >
                   <Image
-                    src={img.additional_image || "/placeholder.svg"}
-                    alt={`${product.product_name} additional view`}
+                    src={product?.thumbnail_image || "/placeholder.svg"}
+                    alt={`${product?.product_name} thumbnail`}
                     fill
                     className="object-cover"
                   />
                 </button>
-              ))}
-            </div>
-          )}
-        </div>
 
-        {/* Product Details */}
-        <div>
-          <h1 className="font-poppins text-3xl font-bold text-[#222222] mb-2">{product?.product_name}</h1>
-          {/* Reviews */}
-          {/* <div className="flex items-center gap-2 mb-4">
-            <div className="flex items-center">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <svg key={star} className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              ))}
-            </div>
-            <span className="font-inter text-sm text-[#666666]">(24 reviews)</span>
-          </div> */}
+                {/* Additional images */}
+                {product.additional_images?.map((img) => (
+                  <button
+                    key={img._id}
+                    onClick={() => setCurrentImage(img?.additional_image || '')}
+                    className={`flex-shrink-0 relative w-20 h-20 rounded-md overflow-hidden border-2 ${currentImage === img.additional_image ? "border-[#ff6600]" : "border-transparent"
+                      }`}
+                  >
+                    <Image
+                      src={img.additional_image || "/placeholder.svg"}
+                      alt={`${product.product_name} additional view`}
+                      fill
+                      className="object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
-          {/* Product price */}
-          <div className="font-poppins text-2xl font-bold text-[#ff6600] mb-6">
+          {/* Product Details */}
+          <div>
+            <h1 className="font-poppins text-3xl font-bold text-[#222222] mb-2">{product?.product_name}</h1>
+
+            {/* Product price */}
             <div className="font-poppins text-2xl font-bold text-[#ff6600] mb-6">
-              {selectedDiscountPrice}
-              <span className="ml-2 text-lg line-through text-[#666666]">
+              <div className="font-poppins text-2xl font-bold text-[#ff6600] mb-6">
+                {selectedDiscountPrice}
+                <span className="ml-2 text-lg line-through text-[#666666]">
                   {selectedPrice}
                 </span>
-              {/* {product?.product_discount_price && product.product_discount_price !== selectedDiscountPrice && (
+                {/* {product?.product_discount_price && product.product_discount_price !== selectedDiscountPrice && (
                 <span className="ml-2 text-lg line-through text-[#666666]">
                   {selectedDiscountPrice}
                 </span>
               )} */}
+              </div>
             </div>
-          </div>
 
-          {/* Product Description */}
-          <div className="font-inter text-[#666666] mb-6">{parse(product?.description)}</div>
+            {/* Product Description */}
+            {/* <div className="font-inter text-[#666666] mb-6">{parse(product?.description)}</div> */}
 
-          {/* {product?.attributes_details && product?.attributes_details.map((attr) => (
+            {/* {product?.attributes_details && product?.attributes_details.map((attr) => (
             <div className="mb-6" key={attr?._id}>
               <h3 className="font-poppins text-sm font-medium text-[#444444] mb-3">{attr?.attribute_name}</h3>
               <div className="flex gap-3">
@@ -197,104 +198,112 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
               </div>
             </div>
           ))} */}
-          <div>
-            {product?.attributes_details?.map((attr) => (
-              <div className="mb-6" key={attr?._id}>
-                <h3 className="font-poppins text-sm font-medium text-[#444444] mb-3">
-                  {attr?.attribute_name}
-                </h3>
 
-                <div className="flex gap-3">
-                  {attr?.attribute_values?.map((value) => {
-                    const isSelected = selectedAttributes[attr.attribute_name ?? ''] === value.attribute_value_name;
-                    if (attr.attribute_name && attr.attribute_name.toLowerCase() === "color") {
-                      return (
-                        <button
-                          key={value?._id}
-                          onClick={() => {
-                            if (attr?.attribute_name && value?.attribute_value_name) {
-                              handleSelect(attr.attribute_name, value.attribute_value_name);
-                            }
-                          }}
-                          className={`w-10 h-10 rounded-full border-2 cursor-pointer ${isSelected ? "border-[#ff6600]" : "border-transparent"}`}
-                        >
-                          <span
-                            className="block w-full h-full rounded-full"
-                            style={{ backgroundColor: value.attribute_value_name && value.attribute_value_name.toLowerCase() }}
-                          />
-                        </button>
-                      );
-                    } else if (attr.attribute_name && attr.attribute_name.toLowerCase() === "size") {
-                      return (
-                        <button
-                          key={value?._id}
-                          onClick={() => {
-                            if (attr?.attribute_name && value?.attribute_value_name) {
-                              handleSelect(attr.attribute_name, value.attribute_value_name);
-                            }
-                          }}
-                          className={`w-10 h-10 flex items-center justify-center rounded border cursor-pointer ${isSelected ? "border-[#ff6600] bg-[#ff6600]/10 text-[#ff6600]" : "border-gray-300 text-[#666666]"
-                            }`}
-                        >
-                          {value.attribute_value_name}
-                        </button>
-                      );
-                    } else {
-                      return (
-                        <button
-                          key={value?._id}
-                          onClick={() => {
-                            if (attr?.attribute_name && value?.attribute_value_name) {
-                              handleSelect(attr.attribute_name, value.attribute_value_name);
-                            }
-                          }}
-                          className={`px-3 py-1 border rounded cursor-pointer ${isSelected ? "border-[#ff6600] bg-[#ff6600]/10 text-[#ff6600]" : "border-gray-300 text-[#666666]"
-                            }`}
-                        >
-                          {value.attribute_value_name}
-                        </button>
-                      );
-                    }
-                  })}
+            {/* Attributes */}
+            <div>
+              {product?.attributes_details?.map((attr) => (
+                <div className="mb-6" key={attr?._id}>
+                  <h3 className="font-poppins text-sm font-medium text-[#444444] mb-3">
+                    {attr?.attribute_name}
+                  </h3>
+
+                  <div className="flex gap-3">
+                    {attr?.attribute_values?.map((value) => {
+                      const isSelected = selectedAttributes[attr.attribute_name ?? ''] === value.attribute_value_name;
+                      if (attr.attribute_name && attr.attribute_name.toLowerCase() === "color") {
+                        return (
+                          <button
+                            key={value?._id}
+                            onClick={() => {
+                              if (attr?.attribute_name && value?.attribute_value_name) {
+                                handleSelect(attr.attribute_name, value.attribute_value_name);
+                              }
+                            }}
+                            className={`w-10 h-10 rounded-full border-2 cursor-pointer ${isSelected ? "border-[#ff6600]" : "border-transparent"}`}
+                          >
+                            <span
+                              className="block w-full h-full rounded-full"
+                              style={{ backgroundColor: value.attribute_value_name && value.attribute_value_name.toLowerCase() }}
+                            />
+                          </button>
+                        );
+                      } else if (attr.attribute_name && attr.attribute_name.toLowerCase() === "size") {
+                        return (
+                          <button
+                            key={value?._id}
+                            onClick={() => {
+                              if (attr?.attribute_name && value?.attribute_value_name) {
+                                handleSelect(attr.attribute_name, value.attribute_value_name);
+                              }
+                            }}
+                            className={`w-10 h-10 flex items-center justify-center rounded border cursor-pointer ${isSelected ? "border-[#ff6600] bg-[#ff6600]/10 text-[#ff6600]" : "border-gray-300 text-[#666666]"
+                              }`}
+                          >
+                            {value.attribute_value_name}
+                          </button>
+                        );
+                      } else {
+                        return (
+                          <button
+                            key={value?._id}
+                            onClick={() => {
+                              if (attr?.attribute_name && value?.attribute_value_name) {
+                                handleSelect(attr.attribute_name, value.attribute_value_name);
+                              }
+                            }}
+                            className={`px-3 py-1 border rounded cursor-pointer ${isSelected ? "border-[#ff6600] bg-[#ff6600]/10 text-[#ff6600]" : "border-gray-300 text-[#666666]"
+                              }`}
+                          >
+                            {value.attribute_value_name}
+                          </button>
+                        );
+                      }
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-
-
-          {/* Quantity */}
-          <div className="mb-8">
-            <h3 className="font-poppins text-sm font-medium text-[#444444] mb-3">Quantity</h3>
-            <div className="flex items-center">
-              <Button variant="outline" size="icon" onClick={decrementQuantity} className="h-10 w-10 rounded-r-none cursor-pointer">
-                <Minus className="h-4 w-4" />
-              </Button>
-              <div className="h-10 w-14 flex items-center justify-center border-y border-input">{quantity}</div>
-              <Button variant="outline" size="icon" onClick={incrementQuantity} className="h-10 w-10 rounded-l-none  cursor-pointer">
-                <Plus className="h-4 w-4" />
-              </Button>
+              ))}
             </div>
-          </div>
 
-          {/* Order Button */}
-          <Button
-            onClick={handleOrder}
-            size="lg"
-            className="w-full bg-[#ff6600] hover:bg-[#ff6600]/90 text-white font-medium transition-transform hover:scale-105"
-          >
-            Order via WhatsApp
-          </Button>
+            {/* Available Stock */}
+            <h1 className='font-poppins text-sm font-medium text-[#444444] mb-3'>Available stock: {selectedQuantity}</h1>
 
-          {/* Share */}
-          {/* <Button variant="ghost" size="sm" className="mt-4 text-[#666666]">
+            {/* Quantity */}
+            <div className="mb-8">
+              <h3 className="font-poppins text-sm font-medium text-[#444444] mb-3">Quantity</h3>
+              <div className="flex items-center">
+                <Button variant="outline" size="icon" onClick={decrementQuantity} className="h-10 w-10 rounded-r-none cursor-pointer">
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <div className="h-10 w-14 flex items-center justify-center border-y border-input">{quantity}</div>
+                <Button variant="outline" size="icon" onClick={incrementQuantity} className="h-10 w-10 rounded-l-none  cursor-pointer">
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Order Button */}
+            <Button
+              onClick={handleOrder}
+              size="lg"
+              className="w-full bg-[#ff6600] hover:bg-[#ff6600]/90 text-white font-medium transition-transform hover:scale-105"
+            >
+              Order via WhatsApp
+            </Button>
+
+            {/* Share */}
+            {/* <Button variant="ghost" size="sm" className="mt-4 text-[#666666]">
             <Share2 className="mr-2 h-4 w-4" />
             Share this product
           </Button> */}
+          </div>
+        </div>
+
+        <div className='h-56  bg-amber-200 w-full lg:w-2/4'>
+          <h1 className='text-center text-2xl font-semibold'>Order Summary</h1>
         </div>
       </div>
-
       {/* Product Tabs */}
-      <div className="mt-16">
+      {/* <div className="mt-16">
         <Tabs defaultValue="description">
           <TabsList className="w-full justify-start border-b rounded-none">
             <TabsTrigger value="description" className="font-poppins">
@@ -310,11 +319,6 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
           <TabsContent value="description" className="pt-6">
             <div className="font-inter text-[#666666] space-y-4">
               <div>{parse(product.description)}</div>
-              {/* <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                ex ea commodo consequat.
-              </p> */}
             </div>
           </TabsContent>
           <TabsContent value="specifications" className="pt-6">
@@ -341,7 +345,7 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
             </div>
           </TabsContent>
         </Tabs>
-      </div>
+      </div> */}
     </div>
   )
 }
