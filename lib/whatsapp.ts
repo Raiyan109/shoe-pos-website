@@ -6,9 +6,9 @@ const ADMIN_WHATSAPP = "+8801796481649"
 export function sendOrderToWhatsApp(orderDetails: OrderDetails) {
   const { productName, productId, price, quantity, selectedAttribute } = orderDetails
   const attributeValues = Object.entries(selectedAttribute)
-        ?.map(([key, value]) => `${key}: ${value}`)
-        .join(", ")
-  
+    ?.map(([key, value]) => `${key}: ${value}`)
+    .join(", ")
+
 
   // Format the message
   const message = `

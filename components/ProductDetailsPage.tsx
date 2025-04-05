@@ -31,6 +31,7 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
   });
   const [selectedPrice, setSelectedPrice] = useState(product?.product_price || 0);
   const [selectedDiscountPrice, setSelectedDiscountPrice] = useState(product?.product_discount_price || 0);
+  const [unitPrice, setUnitPrice] = useState(product?.product_discount_price || 0);
   const [selectedQuantity, setSelectedQuantity] = useState(0);
   // const [selectedColor, setSelectedColor] = useState(product.colors[0])
   // const [selectedSize, setSelectedSize] = useState(product.sizes[0])
@@ -64,16 +65,16 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
 
   useEffect(() => {
     const matchingVariation = findMatchingVariation();
-    const discountPriceWithQuantity = matchingVariation?.variation_discount_price || product?.product_discount_price || 0 
+    const discountPriceWithQuantity = matchingVariation?.variation_discount_price || product?.product_discount_price || 0
     const mainPriceWithQuantity = matchingVariation?.variation_price || product?.product_price || 0
-    if(!discountPriceWithQuantity) return
-    if(!mainPriceWithQuantity) return
+    if (!discountPriceWithQuantity) return
+    if (!mainPriceWithQuantity) return
     const discountPrice = discountPriceWithQuantity * quantity
     const mainPrice = mainPriceWithQuantity * quantity
     setSelectedDiscountPrice(discountPrice)
     setSelectedPrice(mainPrice);
-
-      // setSelectedPrice(matchingVariation?.variation_price || product?.product_price || 0);
+setUnitPrice(matchingVariation?.variation_discount_price || product?.product_discount_price || 0)
+    // setSelectedPrice(matchingVariation?.variation_price || product?.product_price || 0);
     // setSelectedDiscountPrice(matchingVariation?.variation_discount_price || product?.product_discount_price || 0)
     setSelectedQuantity(matchingVariation?.variation_quantity || 0)
   }, [findMatchingVariation, product, quantity]);
@@ -81,13 +82,13 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
   useEffect(() => {
     const matchingVariation = findMatchingVariation()
     const newStockQuantity = matchingVariation?.variation_quantity || 0
-    
+
     // If current quantity exceeds available stock, adjust it
     if (quantity > newStockQuantity && newStockQuantity > 0) {
       setQuantity(newStockQuantity)
       toast.info(`Quantity adjusted to maximum available stock (${newStockQuantity})`)
     }
-    
+
     setSelectedQuantity(newStockQuantity)
   }, [selectedAttributes, findMatchingVariation])
 
@@ -110,7 +111,7 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
       // Use the first non-undefined price or default to 0
       // const firstVariationPrice = product.variations[0]?.variation_discount_price
       // price = typeof firstVariationPrice === "number" ? firstVariationPrice : 0
-      price = selectedPrice
+      price = unitPrice
     } else {
       // Fallback price if neither is available
       price = 0
@@ -119,7 +120,7 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
     sendOrderToWhatsApp({
       productName: product?.product_name,
       productId: product?._id,
-      price: price * quantity,
+      price: price,
       quantity,
       selectedAttribute: selectedAttributes
     })
@@ -187,9 +188,9 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
             {/* Product price */}
             <div className="font-poppins text-2xl font-bold text-[#ff6600] mb-6">
               <div className="font-poppins text-2xl font-bold text-[#ff6600] mb-6">
-                {selectedDiscountPrice}
+              {new Intl.NumberFormat("en-IN").format(selectedDiscountPrice)}
                 <span className="ml-2 text-lg line-through text-[#666666]">
-                  {selectedPrice}
+                {new Intl.NumberFormat("en-IN").format(selectedPrice)}
                 </span>
                 {/* {product?.product_discount_price && product.product_discount_price !== selectedDiscountPrice && (
                 <span className="ml-2 text-lg line-through text-[#666666]">
@@ -303,13 +304,13 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
             </div>
 
             {/* Order Button */}
-            <Button
+            {/* <Button
               onClick={handleOrder}
               size="lg"
               className="w-full bg-[#ff6600] hover:bg-[#ff6600]/90 text-white font-medium transition-transform hover:scale-105"
             >
               Order via WhatsApp
-            </Button>
+            </Button> */}
 
             {/* Share */}
             {/* <Button variant="ghost" size="sm" className="mt-4 text-[#666666]">
@@ -319,9 +320,7 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
           </div>
         </div>
 
-        {/* <div className='h-56  bg-amber-200 w-full lg:w-2/4'>
-          <h1 className='text-center text-2xl font-semibold'>Order Summary</h1>
-        </div> */}
+        {/* Order summary */}
         <div className="w-full lg:w-2/4">
           <div className="border rounded-lg shadow-sm p-6">
             <h1 className="text-center text-2xl font-semibold mb-6 text-[#222222]">Order Summary</h1>
@@ -358,7 +357,7 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
               <div className="space-y-2 pb-4 border-b">
                 <div className="flex justify-between text-[#666666]">
                   <span>Price</span>
-                  <span>{selectedPrice}</span>
+                  <span> {new Intl.NumberFormat("en-IN").format(selectedPrice)}</span>
                 </div>
                 <div className="flex justify-between text-[#666666]">
                   <span>Quantity</span>
@@ -377,15 +376,15 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
               {/* Total */}
               <div className="flex justify-between font-bold text-lg">
                 <span>Total</span>
-                <span className="text-[#ff6600]">{selectedDiscountPrice}</span>
+                <span className="text-[#ff6600]"> {new Intl.NumberFormat("en-IN").format(selectedDiscountPrice)}</span>
               </div>
 
               {/* Order button for mobile */}
-              <div className="lg:hidden mt-4">
+              <div className="mt-4">
                 <Button
                   onClick={handleOrder}
                   size="lg"
-                  className="w-full bg-[#ff6600] hover:bg-[#ff6600]/90 text-white font-medium transition-transform hover:scale-105"
+                  className="w-full bg-[#ff6600] hover:bg-[#ff6600]/90 text-white font-medium transition-transform hover:scale-105 cursor-pointer"
                 >
                   Order via WhatsApp
                 </Button>
