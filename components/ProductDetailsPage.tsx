@@ -46,8 +46,6 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1))
   }
 
-  console.log(product?.variations.map((variation) => variation?.variation_quantity));
-
   if (!product) {
     notFound()
   }
@@ -66,10 +64,19 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
 
   useEffect(() => {
     const matchingVariation = findMatchingVariation();
-    setSelectedPrice(matchingVariation?.variation_price || product?.product_price || 0);
-    setSelectedDiscountPrice(matchingVariation?.variation_discount_price || product?.product_discount_price || 0)
+    const discountPriceWithQuantity = matchingVariation?.variation_discount_price || product?.product_discount_price || 0 
+    const mainPriceWithQuantity = matchingVariation?.variation_price || product?.product_price || 0
+    if(!discountPriceWithQuantity) return
+    if(!mainPriceWithQuantity) return
+    const discountPrice = discountPriceWithQuantity * quantity
+    const mainPrice = mainPriceWithQuantity * quantity
+    setSelectedDiscountPrice(discountPrice)
+    setSelectedPrice(mainPrice);
+
+      // setSelectedPrice(matchingVariation?.variation_price || product?.product_price || 0);
+    // setSelectedDiscountPrice(matchingVariation?.variation_discount_price || product?.product_discount_price || 0)
     setSelectedQuantity(matchingVariation?.variation_quantity || 0)
-  }, [findMatchingVariation, product]);
+  }, [findMatchingVariation, product, quantity]);
 
   const handleSelect = (attributeName: string, value: string) => {
     setSelectedAttributes((prev) => ({
@@ -88,8 +95,9 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
     } else if (product?.variations && product.variations?.length > 0) {
       // If product has variations, take the first variation's discount price
       // Use the first non-undefined price or default to 0
-      const firstVariationPrice = product.variations[0]?.variation_discount_price
-      price = typeof firstVariationPrice === "number" ? firstVariationPrice : 0
+      // const firstVariationPrice = product.variations[0]?.variation_discount_price
+      // price = typeof firstVariationPrice === "number" ? firstVariationPrice : 0
+      price = selectedPrice
     } else {
       // Fallback price if neither is available
       price = 0
@@ -98,7 +106,7 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
     sendOrderToWhatsApp({
       productName: product?.product_name,
       productId: product?._id,
-      price: price,
+      price: price * quantity,
       quantity,
       selectedAttribute: selectedAttributes
     })
@@ -298,8 +306,79 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
           </div>
         </div>
 
-        <div className='h-56  bg-amber-200 w-full lg:w-2/4'>
+        {/* <div className='h-56  bg-amber-200 w-full lg:w-2/4'>
           <h1 className='text-center text-2xl font-semibold'>Order Summary</h1>
+        </div> */}
+        <div className="w-full lg:w-2/4">
+          <div className="border rounded-lg shadow-sm p-6">
+            <h1 className="text-center text-2xl font-semibold mb-6 text-[#222222]">Order Summary</h1>
+
+            <div className="space-y-4">
+              {/* Product summary */}
+              <div className="flex items-center gap-3 pb-4 border-b">
+                <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
+                  <Image
+                    src={currentImage || "/placeholder.svg"}
+                    alt={product?.product_name || "Product"}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-medium text-[#222222] line-clamp-2">{product?.product_name}</h3>
+                  {Object.entries(selectedAttributes).length > 0 && (
+                    <div className="text-sm text-[#666666] mt-1">
+                      {Object.entries(selectedAttributes).map(
+                        ([key, value]) =>
+                          value && (
+                            <span key={key} className="mr-2">
+                              {key}: {value}
+                            </span>
+                          ),
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Price breakdown */}
+              <div className="space-y-2 pb-4 border-b">
+                <div className="flex justify-between text-[#666666]">
+                  <span>Price</span>
+                  <span>{selectedPrice}</span>
+                </div>
+                <div className="flex justify-between text-[#666666]">
+                  <span>Quantity</span>
+                  <span>{quantity}</span>
+                </div>
+                {selectedPrice !== selectedDiscountPrice / quantity && (
+                  <div className="flex justify-between text-[#666666]">
+                    <span>Discount</span>
+                    <span className="text-green-600">
+                      -{(selectedPrice - selectedDiscountPrice).toFixed(2)}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Total */}
+              <div className="flex justify-between font-bold text-lg">
+                <span>Total</span>
+                <span className="text-[#ff6600]">{selectedDiscountPrice}</span>
+              </div>
+
+              {/* Order button for mobile */}
+              <div className="lg:hidden mt-4">
+                <Button
+                  onClick={handleOrder}
+                  size="lg"
+                  className="w-full bg-[#ff6600] hover:bg-[#ff6600]/90 text-white font-medium transition-transform hover:scale-105"
+                >
+                  Order via WhatsApp
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       {/* Product Tabs */}
