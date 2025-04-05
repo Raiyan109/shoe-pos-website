@@ -2,9 +2,9 @@
 import { sendOrderToWhatsApp } from '@/lib/whatsapp'
 import { notFound } from 'next/navigation'
 import React, { useCallback, useEffect, useState } from 'react'
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowLeft, Minus, Plus } from "lucide-react"
-// import parse from "html-react-parser";
+import parse from "html-react-parser";
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 import Image from 'next/image'
@@ -394,18 +394,18 @@ setUnitPrice(matchingVariation?.variation_discount_price || product?.product_dis
         </div>
       </div>
       {/* Product Tabs */}
-      {/* <div className="mt-16">
+      <div className="mt-16">
         <Tabs defaultValue="description">
           <TabsList className="w-full justify-start border-b rounded-none">
             <TabsTrigger value="description" className="font-poppins">
               Description
             </TabsTrigger>
-            <TabsTrigger value="specifications" className="font-poppins">
+            {/* <TabsTrigger value="specifications" className="font-poppins">
               Specifications
             </TabsTrigger>
             <TabsTrigger value="reviews" className="font-poppins">
               Reviews
-            </TabsTrigger>
+            </TabsTrigger> */}
           </TabsList>
           <TabsContent value="description" className="pt-6">
             <div className="font-inter text-[#666666] space-y-4">
@@ -436,7 +436,7 @@ setUnitPrice(matchingVariation?.variation_discount_price || product?.product_dis
             </div>
           </TabsContent>
         </Tabs>
-      </div> */}
+      </div>
     </div>
   )
 }
