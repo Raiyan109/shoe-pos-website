@@ -78,6 +78,19 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
     setSelectedQuantity(matchingVariation?.variation_quantity || 0)
   }, [findMatchingVariation, product, quantity]);
 
+  useEffect(() => {
+    const matchingVariation = findMatchingVariation()
+    const newStockQuantity = matchingVariation?.variation_quantity || 0
+    
+    // If current quantity exceeds available stock, adjust it
+    if (quantity > newStockQuantity && newStockQuantity > 0) {
+      setQuantity(newStockQuantity)
+      toast.info(`Quantity adjusted to maximum available stock (${newStockQuantity})`)
+    }
+    
+    setSelectedQuantity(newStockQuantity)
+  }, [selectedAttributes, findMatchingVariation])
+
   const handleSelect = (attributeName: string, value: string) => {
     setSelectedAttributes((prev) => ({
       ...prev,
