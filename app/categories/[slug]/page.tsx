@@ -22,13 +22,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
-export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
-  let limit = 11
-  let page = 1
+export default async function CategoryPage({ params,searchParams, }: { params: Promise<{ slug: string }>,searchParams: Promise<{ page?: number; limit?: number; }> }) {
+  const {slug} = await params
+  const { page = 1, limit = 10 } = await searchParams
+
   const categories = await getCategories()
   const products = await getProducts({page:page, limit:limit})
   const brands = await getBrands()
-  const {slug} = await params
+
   const category = categories?.data?.find((c:Category) => c?.category_slug === slug)
   
 
@@ -37,8 +38,6 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   }
 
   const categoryProducts = products?.data?.filter((product:Product) => product.category_id?._id === category?._id)
-console.log(categoryProducts, 'categoryproducts');
-console.log(products, 'products');
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -49,7 +48,14 @@ console.log(products, 'products');
         </p>
       </div>
 
-     <CategoryComponent brands={brands} categoryProducts={categoryProducts} />
+     <CategoryComponent
+      brands={brands} 
+      categoryProducts={categoryProducts}
+      // currentPage={page}
+        limit={limit}
+        totalCount={products?.totalData}
+        slug={slug}
+      />
     </div>
   )
 }
