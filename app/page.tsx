@@ -18,7 +18,7 @@ interface IProps {
 export default async function Home() {
   const banners = await getBanners()
   const categories = await getCategories()
-  const products = await getProducts()
+  const products = await getProducts({})
 
 
   return (

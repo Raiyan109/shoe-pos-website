@@ -28,7 +28,7 @@ export async function getCategories() {
 }
 
 // Function to fetch products from API
-export async function getProducts() {
+export async function getProducts({page=1, limit=10}) {
   try {
     const baseUrl = process.env.BASE_URL
     if (!baseUrl) {
@@ -36,7 +36,7 @@ export async function getProducts() {
       return getMockProductsResponse()
     }
 
-    const res = await fetch(`${baseUrl}/product`, {
+    const res = await fetch(`${baseUrl}/product?page=${page}&limit=${limit}`, {
       next: { revalidate: 60 },
     })
 

@@ -5,7 +5,7 @@ import { Category, Product } from "@/lib/types"
 
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
-  const products = await getProducts()
+  const products = await getProducts({})
   const categories = await getCategories()
   const {id} = await params
   const product = products?.data?.find((p:Product) => p?._id === id)
