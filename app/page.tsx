@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import BannerCarousel from "@/components/BannerCarousel"
-import {  Product } from "@/lib/types"
+import { Product } from "@/lib/types"
 import { getBanners, getCategories, getProducts } from "@/lib/api"
 import ProductCard from "@/components/ProductCard"
 import { Button } from "@/components/ui/button"
@@ -54,9 +54,9 @@ export default async function Home() {
 
       {/* Featured Categories Section */}
       <section className="container mx-auto px-4 py-16">
-        <h2 className="font-poppins text-3xl font-bold text-[#222222] mb-8">Featured Collections</h2>
+        <h2 className="font-poppins text-3xl font-bold text-[#222222] mb-8">Featured Categories</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {categories?.data?.map((category:IProps) => (
+          {categories?.data?.map((category: IProps) => (
             <Link
               key={category._id}
               href={`/categories/${category.category_slug}`}
@@ -88,13 +88,13 @@ export default async function Home() {
             variant="outline"
             className="border-[#ff6600] text-[#ff6600] hover:bg-[#ff6600] hover:text-white transition-all"
           >
-            <Link href="/categories">
+            <Link href="/products">
               View All <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products?.data?.slice(0, 4)?.map((product:Product) => (
+          {products?.data?.slice(0, 4)?.map((product: Product) => (
             <ProductCard key={product._id} product={product} />
           ))}
         </div>

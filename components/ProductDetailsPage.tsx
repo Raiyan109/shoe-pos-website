@@ -51,7 +51,6 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
     notFound()
   }
 
-
   const findMatchingVariation = useCallback(() => {
     const selectedValues = product?.attributes_details?.map(
       attr => selectedAttributes[attr.attribute_name ?? '']
@@ -73,7 +72,7 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
     const mainPrice = mainPriceWithQuantity * quantity
     setSelectedDiscountPrice(discountPrice)
     setSelectedPrice(mainPrice);
-setUnitPrice(matchingVariation?.variation_discount_price || product?.product_discount_price || 0)
+    setUnitPrice(matchingVariation?.variation_discount_price || product?.product_discount_price || 0)
     // setSelectedPrice(matchingVariation?.variation_price || product?.product_price || 0);
     // setSelectedDiscountPrice(matchingVariation?.variation_discount_price || product?.product_discount_price || 0)
     setSelectedQuantity(matchingVariation?.variation_quantity || 0)
@@ -188,9 +187,9 @@ setUnitPrice(matchingVariation?.variation_discount_price || product?.product_dis
             {/* Product price */}
             <div className="font-poppins text-2xl font-bold text-[#ff6600] mb-6">
               <div className="font-poppins text-2xl font-bold text-[#ff6600] mb-6">
-              {new Intl.NumberFormat("en-IN").format(selectedDiscountPrice)}
+                {new Intl.NumberFormat("en-IN").format(selectedDiscountPrice)}
                 <span className="ml-2 text-lg line-through text-[#666666]">
-                {new Intl.NumberFormat("en-IN").format(selectedPrice)}
+                  {new Intl.NumberFormat("en-IN").format(selectedPrice)}
                 </span>
                 {/* {product?.product_discount_price && product.product_discount_price !== selectedDiscountPrice && (
                 <span className="ml-2 text-lg line-through text-[#666666]">
