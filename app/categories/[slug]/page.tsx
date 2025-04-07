@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
-export default async function CategoryPage({ params,searchParams, }: { params: Promise<{ slug: string }>,searchParams: Promise<{ page?: number; limit?: number; }> }) {
+export default async function CategoryPage({ params,searchParams}: { params: Promise<{ slug: string }>,searchParams: Promise<{ page?: number; limit?: number; }> }) {
   const {slug} = await params
   const { page = 1, limit = 10 } = await searchParams
 

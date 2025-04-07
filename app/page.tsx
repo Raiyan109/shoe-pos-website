@@ -16,9 +16,11 @@ interface IProps {
 }
 
 export default async function Home() {
+  const page = 1
+  const limit =20
   const banners = await getBanners()
   const categories = await getCategories()
-  const products = await getProducts({})
+  const products = await getProducts({page, limit})
 
 
   return (
@@ -94,7 +96,7 @@ export default async function Home() {
           </Button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products?.data?.slice(0, 4)?.map((product: Product) => (
+          {products?.data?.map((product: Product) => (
             <ProductCard key={product._id} product={product} />
           ))}
         </div>

@@ -102,48 +102,45 @@ const CategoryComponent = ({ brands, categoryProducts,
             </div>
 
             <div className="mt-5 flex items-center justify-center">
-                <div className="mt-5 flex items-center justify-center">
-                    <Pagination>
-                        <PaginationContent>
-                            <PaginationItem>
-                                <button
-                                    className="px-3 py-1 rounded-md border disabled:opacity-50"
-                                    disabled={currentPage === 1}
-                                    onClick={() => handlePageChange(currentPage - 1)}
-                                >
-                                    Previous
-                                </button>
-                            </PaginationItem>
+                <Pagination>
+                    <PaginationContent>
+                        <PaginationItem>
+                            <button
+                                className="px-3 py-1 rounded-md border disabled:opacity-50"
+                                disabled={currentPage === 1}
+                                onClick={() => handlePageChange(currentPage - 1)}
+                            >
+                                Previous
+                            </button>
+                        </PaginationItem>
 
-                            {Array.from({ length: Math.ceil(totalCount / limit) }, (_, i) => {
-                                const pageNumber = i + 1;
-                                return (
-                                    <PaginationItem key={i}>
-                                        <button
-                                            className={`px-3 py-1 rounded-md border cursor-pointer ${currentPage === pageNumber ? "bg-gray-200 font-semibold" : ""
-                                                }`}
-                                            onClick={() => handlePageChange(pageNumber)}
-                                        >
-                                            {pageNumber}
-                                        </button>
-                                    </PaginationItem>
-                                );
-                            })}
+                        {Array.from({ length: Math.ceil(totalCount / limit) }, (_, i) => {
+                            const pageNumber = i + 1;
+                            return (
+                                <PaginationItem key={i}>
+                                    <button
+                                        className={`px-3 py-1 rounded-md border cursor-pointer ${currentPage === pageNumber ? "bg-gray-200 font-semibold" : ""
+                                            }`}
+                                        onClick={() => handlePageChange(pageNumber)}
+                                    >
+                                        {pageNumber}
+                                    </button>
+                                </PaginationItem>
+                            );
+                        })}
 
 
-                            <PaginationItem>
-                                <button
-                                    className="px-3 py-1 rounded-md border disabled:opacity-50"
-                                    disabled={currentPage === Math.ceil(totalCount / limit)}
-                                    onClick={() => handlePageChange(currentPage + 1)}
-                                >
-                                    Next
-                                </button>
-                            </PaginationItem>
-                        </PaginationContent>
-                    </Pagination>
-                </div>
-
+                        <PaginationItem>
+                            <button
+                                className="px-3 py-1 rounded-md border disabled:opacity-50"
+                                disabled={currentPage === Math.ceil(totalCount / limit)}
+                                onClick={() => handlePageChange(currentPage + 1)}
+                            >
+                                Next
+                            </button>
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
             </div>
         </div>
     )
