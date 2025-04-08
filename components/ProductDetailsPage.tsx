@@ -1,12 +1,11 @@
 'use client'
 import { sendOrderToWhatsApp } from '@/lib/whatsapp'
-import { notFound } from 'next/navigation'
+import { notFound,  useRouter } from 'next/navigation'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowLeft, Minus, Plus } from "lucide-react"
 import parse from "html-react-parser";
 import { Button } from "@/components/ui/button"
-import Link from 'next/link'
 import Image from 'next/image'
 import { Category, Product } from '@/lib/types'
 import { toast } from "sonner"
@@ -33,8 +32,12 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
   const [selectedDiscountPrice, setSelectedDiscountPrice] = useState(product?.product_discount_price || 0);
   const [unitPrice, setUnitPrice] = useState(product?.product_discount_price || 0);
   const [selectedQuantity, setSelectedQuantity] = useState(0);
-  // const [selectedColor, setSelectedColor] = useState(product.colors[0])
-  // const [selectedSize, setSelectedSize] = useState(product.sizes[0])
+  const router = useRouter()
+
+  const handleBack = () => {
+    router.back()
+  }
+  
 
   const incrementQuantity = () => {
     if (quantity >= selectedQuantity) {
@@ -127,13 +130,20 @@ const ProductDetailsPage = ({ product, category }: { product: Product, category:
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <Link
+      {/* <Link
         href={`/categories/${category?.category_slug}`}
         className="inline-flex items-center font-inter text-[#666666] hover:text-[#ff6600] mb-8"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back to {category?.category_name}
-      </Link>
+      </Link> */}
+       <button
+       onClick={handleBack}
+        className="inline-flex items-center font-inter text-[#666666] hover:text-[#ff6600] mb-8"
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Go Back
+      </button>
 
       <div className="flex justify-between flex-col lg:flex-row gap-16 lg:gap-56">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full lg:w-3/4">
