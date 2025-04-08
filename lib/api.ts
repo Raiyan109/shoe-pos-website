@@ -28,7 +28,37 @@ export async function getCategories() {
 }
 
 // Function to fetch products from API
-export async function getProducts({page=1, limit=10}) {
+// export async function getProducts({page=1, limit=10}) {
+//   try {
+//     const baseUrl = process.env.BASE_URL
+//     if (!baseUrl) {
+//       console.warn("BASE_URL environment variable is not set, using mock data")
+//       return getMockProductsResponse()
+//     }
+
+//     const res = await fetch(`${baseUrl}/product?page=${page}&limit=${limit}`, {
+//       next: { revalidate: 60 },
+//     })
+
+//     if (!res.ok) {
+//       console.warn(`API returned status ${res.status}, using mock data`)
+//       return getMockProductsResponse()
+//     }
+
+//     return await res.json()
+//   } catch (error) {
+//     console.error("Error fetching products:", error)
+//     console.info("Falling back to mock data")
+//     // Return mock data as fallback
+//     return getMockProductsResponse()
+//   }
+// }
+// Updated function to fetch products with category filter
+export async function getProducts({
+  page = 1,
+  limit = 10,
+  categoryId = null // New parameter
+}) {
   try {
     const baseUrl = process.env.BASE_URL
     if (!baseUrl) {
@@ -36,7 +66,17 @@ export async function getProducts({page=1, limit=10}) {
       return getMockProductsResponse()
     }
 
-    const res = await fetch(`${baseUrl}/product?page=${page}&limit=${limit}`, {
+    // Build query parameters including category if provided
+    const queryParams = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString()
+    })
+
+    if (categoryId) {
+      queryParams.append('category_id', categoryId)
+    }
+
+    const res = await fetch(`${baseUrl}/product?${queryParams.toString()}`, {
       next: { revalidate: 60 },
     })
 
@@ -49,7 +89,6 @@ export async function getProducts({page=1, limit=10}) {
   } catch (error) {
     console.error("Error fetching products:", error)
     console.info("Falling back to mock data")
-    // Return mock data as fallback
     return getMockProductsResponse()
   }
 }

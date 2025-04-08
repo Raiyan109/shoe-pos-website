@@ -1,14 +1,14 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { Category, Product } from "@/lib/types"
+import { Category } from "@/lib/types"
 import { getBrands, getCategories, getProducts } from "@/lib/api"
 import CategoryComponent from "@/components/CategoryComponent"
 
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const categories = await getCategories()
-  const {slug} = await params
-  const category = categories?.data?.find((c:Category) => c.category_slug === slug)
+  const { slug } = await params
+  const category = categories?.data?.find((c: Category) => c.category_slug === slug)
 
   if (!category) {
     return {
@@ -22,23 +22,28 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
-export default async function CategoryPage({ params,searchParams}: { params: Promise<{ slug: string }>,searchParams: Promise<{ page?: number; limit?: number; }> }) {
-  const {slug} = await params
+export default async function CategoryPage({ params, searchParams }: { params: Promise<{ slug: string }>, searchParams: Promise<{ page?: number; limit?: number; }> }) {
+  const { slug } = await params
   const { page = 1, limit = 10 } = await searchParams
 
   const categories = await getCategories()
-  const products = await getProducts({page:page, limit:limit})
   const brands = await getBrands()
+  const category = categories?.data?.find((c: Category) => c?.category_slug === slug)
 
-  const category = categories?.data?.find((c:Category) => c?.category_slug === slug)
-  
 
   if (!category) {
     notFound()
   }
+  // const products = await getProducts({page:page, limit:limit})
+  const products = await getProducts({
+    page: page,
+    limit: limit,
+    categoryId: category._id // Pass category ID to filter at the API level
+  })
 
-  const categoryProducts = products?.data?.filter((product:Product) => product.category_id?._id === category?._id)
 
+  // const categoryProducts = products?.data?.filter((product:Product) => product.category_id?._id === category?._id)
+  const categoryProducts = products?.data
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="mb-8">
@@ -48,10 +53,10 @@ export default async function CategoryPage({ params,searchParams}: { params: Pro
         </p>
       </div>
 
-     <CategoryComponent
-      brands={brands} 
-      categoryProducts={categoryProducts}
-      // currentPage={page}
+      <CategoryComponent
+        brands={brands}
+        categoryProducts={categoryProducts}
+        // currentPage={page}
         limit={limit}
         totalCount={products?.totalData}
         slug={slug}
