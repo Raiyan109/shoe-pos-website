@@ -31,7 +31,7 @@ const ProductDetailsPage = ({ product }: { product: Product }) => {
   const [selectedPrice, setSelectedPrice] = useState(product?.product_price || 0);
   const [selectedDiscountPrice, setSelectedDiscountPrice] = useState(product?.product_discount_price || 0);
   const [unitPrice, setUnitPrice] = useState(product?.product_discount_price || 0);
-  const [selectedQuantity, setSelectedQuantity] = useState(0);
+  const [selectedQuantity, setSelectedQuantity] = useState(product?.product_quantity || 0);
   const router = useRouter()
 
   const handleBack = () => {
@@ -78,21 +78,52 @@ const ProductDetailsPage = ({ product }: { product: Product }) => {
     setUnitPrice(matchingVariation?.variation_discount_price || product?.product_discount_price || 0)
     // setSelectedPrice(matchingVariation?.variation_price || product?.product_price || 0);
     // setSelectedDiscountPrice(matchingVariation?.variation_discount_price || product?.product_discount_price || 0)
-    setSelectedQuantity(matchingVariation?.variation_quantity || 0)
-  }, [findMatchingVariation, product, quantity]);
+    if (matchingVariation) {
+      setSelectedQuantity(matchingVariation.variation_quantity || 0)
+    } else {
+      setSelectedQuantity(product?.product_quantity || 0)
+    }
+  }, [findMatchingVariation, product, quantity, selectedQuantity]);
 
+  // useEffect(() => {
+  //   const matchingVariation = findMatchingVariation()
+  //   const newStockQuantity = matchingVariation?.variation_quantity || 0
+
+  //   // If current quantity exceeds available stock, adjust it
+  //   if (quantity > newStockQuantity && newStockQuantity > 0) {
+  //     setQuantity(newStockQuantity)
+  //     toast.info(`Quantity adjusted to maximum available stock (${newStockQuantity})`)
+  //   }
+
+  //   setSelectedQuantity(newStockQuantity)
+  // }, [selectedAttributes, findMatchingVariation])
   useEffect(() => {
     const matchingVariation = findMatchingVariation()
-    const newStockQuantity = matchingVariation?.variation_quantity || 0
+    // If there's a matching variation, use its quantity
+    if (matchingVariation) {
+      const newStockQuantity = matchingVariation.variation_quantity || 0
 
-    // If current quantity exceeds available stock, adjust it
-    if (quantity > newStockQuantity && newStockQuantity > 0) {
-      setQuantity(newStockQuantity)
-      toast.info(`Quantity adjusted to maximum available stock (${newStockQuantity})`)
+      // If current quantity exceeds available stock, adjust it
+      if (quantity > newStockQuantity && newStockQuantity > 0) {
+        setQuantity(newStockQuantity)
+        toast.info(`Quantity adjusted to maximum available stock (${newStockQuantity})`)
+      }
+
+      setSelectedQuantity(newStockQuantity)
+    } else {
+      // For products without variations, use product_quantity
+      const productQuantity = product?.product_quantity || 0
+
+      // If current quantity exceeds available stock, adjust it
+      if (quantity > productQuantity && productQuantity > 0) {
+        setQuantity(productQuantity)
+        toast.info(`Quantity adjusted to maximum available stock (${productQuantity})`)
+      }
+
+      setSelectedQuantity(productQuantity)
     }
+  }, [selectedAttributes, findMatchingVariation, product, quantity])
 
-    setSelectedQuantity(newStockQuantity)
-  }, [selectedAttributes, findMatchingVariation])
 
   const handleSelect = (attributeName: string, value: string) => {
     setSelectedAttributes((prev) => ({
@@ -197,10 +228,10 @@ const ProductDetailsPage = ({ product }: { product: Product }) => {
             {/* Product price */}
             <div className="font-poppins text-2xl font-bold text-[#ff6600] mb-6">
               <div className="font-poppins text-2xl font-bold text-[#ff6600] mb-6">
-                {new Intl.NumberFormat("en-IN").format(selectedDiscountPrice)}
-                <span className="ml-2 text-lg line-through text-[#666666]">
+                <span>{selectedDiscountPrice > 0 ? new Intl.NumberFormat("en-IN").format(selectedDiscountPrice) : new Intl.NumberFormat("en-IN").format(selectedPrice)}</span>
+                {selectedDiscountPrice > 0 && <span className="ml-2 text-lg line-through text-[#666666]">
                   {new Intl.NumberFormat("en-IN").format(selectedPrice)}
-                </span>
+                </span>}
                 {/* {product?.product_discount_price && product.product_discount_price !== selectedDiscountPrice && (
                 <span className="ml-2 text-lg line-through text-[#666666]">
                   {selectedDiscountPrice}
@@ -330,88 +361,87 @@ const ProductDetailsPage = ({ product }: { product: Product }) => {
         </div>
 
         {/* Order summary */}
-        <div>
-          {
-            selectedQuantity > 0 ? (
-              <div className="w-full lg:w-2/4">
-                <div className="border rounded-lg shadow-sm p-6">
-                  <h1 className="text-center text-2xl font-semibold mb-6 text-[#222222]">Order Summary</h1>
+        {
+          selectedQuantity > 0 ? (
+            <div className="w-full lg:w-2/4">
+              <div className="border rounded-lg shadow-sm p-6">
+                <h1 className="text-center text-2xl font-semibold mb-6 text-[#222222]">Order Summary</h1>
 
-                  <div className="space-y-4">
-                    {/* Product summary */}
-                    <div className="flex items-center gap-3 pb-4 border-b">
-                      <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
-                        <Image
-                          src={currentImage || "/placeholder.svg"}
-                          alt={product?.product_name || "Product"}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-medium text-[#222222] line-clamp-2">{product?.product_name}</h3>
-                        {Object.entries(selectedAttributes).length > 0 && (
-                          <div className="text-sm text-[#666666] mt-1">
-                            {Object.entries(selectedAttributes).map(
-                              ([key, value]) =>
-                                value && (
-                                  <span key={key} className="mr-2">
-                                    {key}: {value}
-                                  </span>
-                                ),
-                            )}
-                          </div>
-                        )}
-                      </div>
+                <div className="space-y-4">
+                  {/* Product summary */}
+                  <div className="flex items-center gap-3 pb-4 border-b">
+                    <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
+                      <Image
+                        src={currentImage || "/placeholder.svg"}
+                        alt={product?.product_name || "Product"}
+                        fill
+                        className="object-cover"
+                      />
                     </div>
-
-                    {/* Price breakdown */}
-                    <div className="space-y-2 pb-4 border-b">
-                      <div className="flex justify-between text-[#666666]">
-                        <span>Price</span>
-                        <span> {new Intl.NumberFormat("en-IN").format(selectedPrice)}</span>
-                      </div>
-                      <div className="flex justify-between text-[#666666]">
-                        <span>Quantity</span>
-                        <span>{quantity}</span>
-                      </div>
-                      {selectedPrice !== selectedDiscountPrice / quantity && (
-                        <div className="flex justify-between text-[#666666]">
-                          <span>Discount</span>
-                          <span className="text-green-600">
-                            -{(selectedPrice - selectedDiscountPrice).toFixed(2)}
-                          </span>
+                    <div className="flex-1">
+                      <h3 className="font-medium text-[#222222] line-clamp-2">{product?.product_name}</h3>
+                      {Object.entries(selectedAttributes).length > 0 && (
+                        <div className="text-sm text-[#666666] mt-1">
+                          {Object.entries(selectedAttributes).map(
+                            ([key, value]) =>
+                              value && (
+                                <span key={key} className="mr-2">
+                                  {key}: {value}
+                                </span>
+                              ),
+                          )}
                         </div>
                       )}
                     </div>
+                  </div>
 
-                    {/* Total */}
-                    <div className="flex justify-between font-bold text-lg">
-                      <span>Total</span>
-                      <span className="text-[#ff6600]"> {new Intl.NumberFormat("en-IN").format(selectedDiscountPrice)}</span>
+                  {/* Price breakdown */}
+                  <div className="space-y-2 pb-4 border-b">
+                    <div className="flex justify-between text-[#666666]">
+                      <span>Price</span>
+                      <span> {new Intl.NumberFormat("en-IN").format(selectedPrice)}</span>
                     </div>
+                    <div className="flex justify-between text-[#666666]">
+                      <span>Quantity</span>
+                      <span>{quantity}</span>
+                    </div>
+                    {selectedPrice !== selectedDiscountPrice / quantity && (
+                      <div className="flex justify-between text-[#666666]">
+                        <span>Discount</span>
+                        <span className="text-green-600">
+                          -{(selectedPrice - selectedDiscountPrice).toFixed(2)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
 
-                    {/* Order button for mobile */}
-                    <div className="mt-4">
-                      <Button
-                        disabled={selectedQuantity < 1}
-                        onClick={handleOrder}
-                        size="lg"
-                        className="w-full bg-[#ff6600] hover:bg-[#ff6600]/90 text-white font-medium transition-transform hover:scale-105 cursor-pointer"
-                      >
-                        Order via WhatsApp
-                      </Button>
-                    </div>
+                  {/* Total */}
+                  <div className="flex justify-between font-bold text-lg">
+                    <span>Total</span>
+                    <span className="text-[#ff6600]"> {new Intl.NumberFormat("en-IN").format(selectedDiscountPrice)}</span>
+                  </div>
+
+                  {/* Order button for mobile */}
+                  <div className="mt-4">
+                    <Button
+                      disabled={selectedQuantity < 1}
+                      onClick={handleOrder}
+                      size="lg"
+                      className="w-full bg-[#ff6600] hover:bg-[#ff6600]/90 text-white font-medium transition-transform hover:scale-105 cursor-pointer"
+                    >
+                      Order via WhatsApp
+                    </Button>
                   </div>
                 </div>
               </div>
-            ) : (
-              <div>
-                <p className='text-red-500 text-2xl'>Stock is not available.</p>
-              </div>
-            )
-          }
-        </div>
+            </div>
+          ) : (
+            <div>
+              {/* <p className='text-red-500 text-2xl'>Stock is not available.</p> */}
+            </div>
+          )
+        }
+
       </div>
       {/* Product Tabs */}
       <div className="mt-16">
