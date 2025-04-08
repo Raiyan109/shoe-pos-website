@@ -101,7 +101,7 @@ const CategoryComponent = ({ brands, categoryProducts,
                 </div>
             </div>
 
-            <div className="mt-5 flex items-center justify-center">
+            <div className="mt-20 flex items-center justify-center">
                 <Pagination>
                     <PaginationContent>
                         <PaginationItem>
