@@ -67,15 +67,25 @@ const ProductDetailsPage = ({ product }: { product: Product }) => {
 
   useEffect(() => {
     const matchingVariation = findMatchingVariation();
-    const discountPriceWithQuantity = matchingVariation?.variation_discount_price || product?.product_discount_price || 0
-    const mainPriceWithQuantity = matchingVariation?.variation_price || product?.product_price || 0
-    if (!discountPriceWithQuantity) return
-    if (!mainPriceWithQuantity) return
-    const discountPrice = discountPriceWithQuantity * quantity
-    const mainPrice = mainPriceWithQuantity * quantity
+    // const discountPriceWithQuantity = matchingVariation?.variation_discount_price || product?.product_discount_price || 0
+    // const mainPriceWithQuantity = matchingVariation?.variation_price || product?.product_price || 0
+    // if (!discountPriceWithQuantity) return
+    // if (!mainPriceWithQuantity) return
+    // const discountPrice = discountPriceWithQuantity * quantity
+    // const mainPrice = mainPriceWithQuantity * quantity
+    // setSelectedDiscountPrice(discountPrice)
+    // setSelectedPrice(mainPrice);
+    // setUnitPrice(matchingVariation?.variation_discount_price || product?.product_discount_price || 0)
+    const unitDiscountPrice = matchingVariation?.variation_discount_price || product?.product_discount_price || 0
+    const unitMainPrice = matchingVariation?.variation_price || product?.product_price || 0
+
+    // Always calculate both prices with quantity
+    const discountPrice = unitDiscountPrice * quantity
+    const mainPrice = unitMainPrice * quantity
+
     setSelectedDiscountPrice(discountPrice)
-    setSelectedPrice(mainPrice);
-    setUnitPrice(matchingVariation?.variation_discount_price || product?.product_discount_price || 0)
+    setSelectedPrice(mainPrice)
+    setUnitPrice(unitDiscountPrice || unitMainPrice)
     // setSelectedPrice(matchingVariation?.variation_price || product?.product_price || 0);
     // setSelectedDiscountPrice(matchingVariation?.variation_discount_price || product?.product_discount_price || 0)
     if (matchingVariation) {
@@ -405,7 +415,7 @@ const ProductDetailsPage = ({ product }: { product: Product }) => {
                       <span>Quantity</span>
                       <span>{quantity}</span>
                     </div>
-                    {selectedPrice !== selectedDiscountPrice / quantity && (
+                    {selectedDiscountPrice >0 && selectedPrice !== selectedDiscountPrice / quantity && (
                       <div className="flex justify-between text-[#666666]">
                         <span>Discount</span>
                         <span className="text-green-600">
@@ -418,7 +428,7 @@ const ProductDetailsPage = ({ product }: { product: Product }) => {
                   {/* Total */}
                   <div className="flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span className="text-[#ff6600]"> {new Intl.NumberFormat("en-IN").format(selectedDiscountPrice)}</span>
+                    <span className="text-[#ff6600]"> {selectedDiscountPrice > 0 ? new Intl.NumberFormat("en-IN").format(selectedDiscountPrice) : new Intl.NumberFormat("en-IN").format(selectedPrice)}</span>
                   </div>
 
                   {/* Order button for mobile */}
