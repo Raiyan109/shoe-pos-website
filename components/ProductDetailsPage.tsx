@@ -1,6 +1,6 @@
 'use client'
 import { sendOrderToWhatsApp } from '@/lib/whatsapp'
-import { notFound, useRouter } from 'next/navigation'
+import { notFound, usePathname, useRouter } from 'next/navigation'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowLeft, Minus, Plus } from "lucide-react"
@@ -32,7 +32,17 @@ const ProductDetailsPage = ({ product }: { product: Product }) => {
   const [selectedDiscountPrice, setSelectedDiscountPrice] = useState(product?.product_discount_price || 0);
   const [unitPrice, setUnitPrice] = useState(product?.product_discount_price || 0);
   const [selectedQuantity, setSelectedQuantity] = useState(product?.product_quantity || 0);
+  const [fullUrl, setFullUrl] = useState('')
   const router = useRouter()
+  const pathname = usePathname()
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const origin = window.location.origin
+      setFullUrl(origin + pathname)
+    }
+  }, [pathname])
+
 
   const handleBack = () => {
     router.back()
@@ -162,7 +172,7 @@ const ProductDetailsPage = ({ product }: { product: Product }) => {
 
     sendOrderToWhatsApp({
       productName: product?.product_name,
-      productId: product?._id,
+      productLink: fullUrl,
       price: price,
       quantity,
       selectedAttribute: selectedAttributes

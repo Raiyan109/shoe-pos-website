@@ -4,7 +4,7 @@ import type { OrderDetails } from "./types"
 const ADMIN_WHATSAPP = "+8801796481649"
 
 export function sendOrderToWhatsApp(orderDetails: OrderDetails) {
-  const { productName, productId, price, quantity, selectedAttribute } = orderDetails
+  const { productName, productLink, price, quantity, selectedAttribute } = orderDetails
   const attributeValues = Object.entries(selectedAttribute)
     ?.map(([key, value]) => `${key}: ${value}`)
     .join(", ")
@@ -14,10 +14,10 @@ export function sendOrderToWhatsApp(orderDetails: OrderDetails) {
   const message = `
           *New Order*
           Product: ${productName}
-          ID: ${productId}
+          Product link: ${productLink}
           Price: ${price.toFixed(2)}
           Quantity: ${quantity}
-          ${attributeValues ? `Attributes: ${attributeValues}` : ""}
+          ${attributeValues ? `Variations: ${attributeValues}` : ""}
           Total: ${(price * quantity).toFixed(2)}
 `.trim()
 

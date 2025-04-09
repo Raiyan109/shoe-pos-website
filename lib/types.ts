@@ -84,7 +84,7 @@ export interface Product {
   
   export interface OrderDetails {
     productName: string
-    productId: string | undefined
+    productLink: string | undefined
     price: number
     quantity: number
     selectedAttribute: Record<string, string | null>
