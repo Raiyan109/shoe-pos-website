@@ -58,8 +58,10 @@ export default async function Home() {
       <section className="container mx-auto px-4 py-16">
         <h2 className="font-poppins text-3xl font-bold text-[#222222] mb-8">Featured Categories</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {categories?.data?.map((category: IProps) => (
-            <Link
+          {categories?.data?.map((category: IProps) => {
+            if(category?.total_product > 0)
+            return (
+              <Link
               key={category._id}
               href={`/categories/${category.category_slug}`}
               className="group relative h-64 overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
@@ -77,7 +79,8 @@ export default async function Home() {
                 </div>
               </div>
             </Link>
-          ))}
+            )
+          })}
         </div>
       </section>
 
