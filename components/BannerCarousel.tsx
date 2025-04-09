@@ -42,6 +42,13 @@ export default function BannerCarousel({ banners }: BannerCarouselProps) {
     const handleMouseEnter = () => setAutoplay(false)
     const handleMouseLeave = () => setAutoplay(true)
 
+    // Handle shop now button click
+    const handleShopNowClick = (e: React.MouseEvent, path: string) => {
+        e.stopPropagation() // Stop event propagation
+        console.log("Shop Now clicked, navigating to:", path)
+        window.location.href = path // Direct navigation as a fallback
+    }
+
     return (
         <div className="relative h-[70vh] overflow-hidden" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
             <div
@@ -57,18 +64,43 @@ export default function BannerCarousel({ banners }: BannerCarouselProps) {
                             className="object-cover brightness-[0.8]"
                             priority={index === 0}
                         />
-                        <div className="absolute inset-0 flex items-center">
+                        <div className="absolute inset-0 flex items-center pointer-events-none">
                             <div className="container mx-auto px-4 py-32 text-white">
                                 <h1 className="font-poppins text-4xl md:text-5xl lg:text-6xl font-bold mb-6 max-w-2xl">
                                     {banner?.banner_title}
                                 </h1>
-                                <Button
+                                {/* <Button
                                     asChild
                                     size="lg"
-                                    className="bg-[#ff6600] hover:bg-[#ff6600]/90 text-white font-medium transition-transform hover:scale-105"
+                                    className="bg-[#ff6600] hover:bg-[#ff6600]/90 text-white font-medium transition-transform hover:scale-105 cursor-pointer"
                                 >
                                     <Link href={banner?.banner_path} className="cursor-pointer">Shop Now</Link>
-                                </Button>
+                                </Button> */}
+                                {/* Fixed button with link */}
+                                {/* {banner?.banner_path && (
+                                    <Link href={banner.banner_path}>
+                                        <Button
+                                            
+                                            size="lg"
+                                            className="bg-[#ff6600] hover:bg-[#ff6600]/90 text-white font-medium transition-transform hover:scale-105 cursor-pointer z-[999]"
+                                            onClick={() => console.log('clicked')
+                                            }
+                                        >
+                                            Shop Now
+                                        </Button>
+                                    </Link>
+                                )} */}
+                                {banner?.banner_path && (
+                                    <div className="pointer-events-auto relative z-10">
+                                        <Button
+                                            size="lg"
+                                            className="bg-[#ff6600] hover:bg-[#ff6600]/90 text-white font-medium transition-transform hover:scale-105 cursor-pointer"
+                                            onClick={(e) => handleShopNowClick(e, banner.banner_path)}
+                                        >
+                                            Shop Now
+                                        </Button>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

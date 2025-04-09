@@ -6,6 +6,7 @@ import { getBanners, getCategories, getProducts } from "@/lib/api"
 import ProductCard from "@/components/ProductCard"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
+import BannerCarousel2 from "@/components/BannerCarousel2"
 
 interface IProps {
   _id: string
@@ -27,7 +28,8 @@ export default async function Home() {
     <main className="flex-1">
       {/* Hero Carousel Section */}
       <section className="relative">
-        <BannerCarousel banners={banners?.data} />
+        {/* <BannerCarousel banners={banners?.data} /> */}
+        <BannerCarousel2 banners={banners?.data} />
       </section>
 
       {/* Categories Section */}
