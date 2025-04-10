@@ -3,29 +3,33 @@ import { Facebook, Instagram, Twitter } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { getSettings } from "@/lib/api"
 
-export default function Footer() {
+export default async function Footer() {
+  const settings = await getSettings()
+  const settingsData = settings?.data[0]
+  console.log(settingsData?.facebook_link);
+
   return (
     <footer className="bg-gray-100 pt-16 pb-8">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Company Info */}
           <div>
-            <h3 className="font-poppins text-xl font-bold text-[#222222] mb-4">StoreName</h3>
+            <h3 className="font-poppins text-xl font-bold text-[#222222] mb-4">{settingsData?.title}</h3>
             <p className="font-inter text-[#666666] mb-4">
-              Providing quality products since 2023. Our mission is to deliver exceptional value and service to our
-              customers.
+              {settingsData?.welcome_message}
             </p>
             <div className="flex space-x-4">
-              <Button variant="ghost" size="icon" className="text-[#444444] hover:text-[#ff6600]">
+              <a href={settingsData?.facebook_link} rel="noreferrer" target="_blank" className="text-[#444444] hover:text-[#ff6600]">
                 <Facebook className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon" className="text-[#444444] hover:text-[#ff6600]">
+              </a>
+              <a href={settingsData?.instagram_link} rel="noreferrer" target="_blank" className="text-[#444444] hover:text-[#ff6600]">
                 <Instagram className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon" className="text-[#444444] hover:text-[#ff6600]">
+              </a>
+              <a href={settingsData?.twitter_link} rel="noreferrer" target="_blank" className="text-[#444444] hover:text-[#ff6600]">
                 <Twitter className="h-5 w-5" />
-              </Button>
+              </a>
             </div>
           </div>
 
@@ -38,21 +42,21 @@ export default function Footer() {
                   Home
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href="/categories" className="text-[#666666] hover:text-[#ff6600] transition-colors">
                   Shop
                 </Link>
-              </li>
+              </li> */}
               <li>
-                <Link href="#" className="text-[#666666] hover:text-[#ff6600] transition-colors">
+                <Link href="/about" className="text-[#666666] hover:text-[#ff6600] transition-colors">
                   About Us
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href="#" className="text-[#666666] hover:text-[#ff6600] transition-colors">
                   Contact
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
 
@@ -61,23 +65,33 @@ export default function Footer() {
             <h3 className="font-poppins text-lg font-bold text-[#222222] mb-4">Customer Service</h3>
             <ul className="font-inter space-y-2">
               <li>
-                <Link href="#" className="text-[#666666] hover:text-[#ff6600] transition-colors">
-                  FAQ
+                <Link href="/return" className="text-[#666666] hover:text-[#ff6600] transition-colors">
+                  Return Policy
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-[#666666] hover:text-[#ff6600] transition-colors">
+                <Link href="/shipping" className="text-[#666666] hover:text-[#ff6600] transition-colors">
                   Shipping Policy
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-[#666666] hover:text-[#ff6600] transition-colors">
-                  Returns & Exchanges
+                <Link href="/refund" className="text-[#666666] hover:text-[#ff6600] transition-colors">
+                  Refund Policy
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-[#666666] hover:text-[#ff6600] transition-colors">
+                <Link href="cancellation" className="text-[#666666] hover:text-[#ff6600] transition-colors">
+                  Cancellation Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="privacy" className="text-[#666666] hover:text-[#ff6600] transition-colors">
                   Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="terms" className="text-[#666666] hover:text-[#ff6600] transition-colors">
+                  Terms & Conditions
                 </Link>
               </li>
             </ul>

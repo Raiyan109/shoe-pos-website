@@ -130,6 +130,21 @@ export async function getBrands() {
 }
 
 
+// Function to fetch products from API
+export async function getSettings() {
+  try {
+    const baseUrl = process.env.BASE_URL
+    const res = await fetch(`${baseUrl}/settings`, {
+      next: { revalidate: 60 },
+    })
+
+    return await res.json()
+  } catch (error) {
+    console.error("Error fetching settings:", error)
+  }
+}
+
+
 // export async function getSettings() {
 //   try {
 //     const baseUrl = process.env.BASE_URL
