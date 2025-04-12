@@ -20,17 +20,7 @@ export default async function Footer() {
             <p className="font-inter text-[#666666] mb-4">
               {settingsData?.welcome_message}
             </p>
-            <div className="flex space-x-4">
-              <a href={settingsData?.facebook_link} rel="noreferrer" target="_blank" className="text-[#444444] hover:text-[#ff6600]">
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a href={settingsData?.instagram_link} rel="noreferrer" target="_blank" className="text-[#444444] hover:text-[#ff6600]">
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a href={settingsData?.twitter_link} rel="noreferrer" target="_blank" className="text-[#444444] hover:text-[#ff6600]">
-                <Twitter className="h-5 w-5" />
-              </a>
-            </div>
+
           </div>
 
           {/* Quick Links */}
@@ -99,8 +89,19 @@ export default async function Footer() {
 
           {/* Newsletter */}
           <div>
-            <h3 className="font-poppins text-lg font-bold text-[#222222] mb-4">Newsletter</h3>
-            <p className="font-inter text-[#666666] mb-4">
+            <h3 className="font-poppins text-lg font-bold text-[#222222] mb-4">Social Links</h3>
+            <div className="flex space-x-4">
+              <a href={settingsData?.facebook_link} rel="noreferrer" target="_blank" className="text-[#444444] hover:text-[#ff6600]">
+                <Facebook className="h-5 w-5" />
+              </a>
+              <a href={settingsData?.instagram_link} rel="noreferrer" target="_blank" className="text-[#444444] hover:text-[#ff6600]">
+                <Instagram className="h-5 w-5" />
+              </a>
+              <a href={settingsData?.twitter_link} rel="noreferrer" target="_blank" className="text-[#444444] hover:text-[#ff6600]">
+                <Twitter className="h-5 w-5" />
+              </a>
+            </div>
+            {/* <p className="font-inter text-[#666666] mb-4">
               Subscribe to our newsletter for updates on new products and special offers.
             </p>
             <div className="flex gap-2">
@@ -108,15 +109,15 @@ export default async function Footer() {
               <Button className="bg-[#ff6600] hover:bg-[#ff6600]/90 text-white font-medium transition-transform hover:scale-105">
                 Subscribe
               </Button>
-            </div>
+            </div> */}
           </div>
         </div>
 
-        <div className="border-t border-gray-200 pt-8">
+        {/* <div className="border-t border-gray-200 pt-8">
           <p className="font-inter text-center text-[#666666]">
             © {new Date().getFullYear()} StoreName. All rights reserved.
           </p>
-        </div>
+        </div> */}
       </div>
     </footer>
   )
