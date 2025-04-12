@@ -42,13 +42,13 @@ export function ProductFilters({ products, onFilterChange }: ProductFiltersProps
   }));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-1">
       <div>
-        <h3 className="font-poppins text-lg font-semibold text-[#333333] mb-4">Filters</h3>
-        <Button variant="outline" className="w-full justify-between text-[#666666]">
+        <h3 className="font-poppins text-lg font-semibold text-[#333333] mb-1">Filters</h3>
+        {/* <Button variant="outline" className="w-full justify-between text-[#666666]">
           Clear All Filters
           <ChevronDown className="h-4 w-4 ml-2" />
-        </Button>
+        </Button> */}
       </div>
 
       <Accordion type="multiple" className="w-full">

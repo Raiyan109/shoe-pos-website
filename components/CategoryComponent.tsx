@@ -10,6 +10,7 @@ import {
     PaginationItem,
 } from "@/components/ui/pagination"
 import { useRouter, useSearchParams } from 'next/navigation'
+import ProductCardSkeleton from "./skeletons/ProductCardSkeleton"
 
 interface IBrand {
     success: boolean
@@ -30,8 +31,10 @@ const CategoryComponent = ({ brands, categoryProducts,
         slug: string
     }) => {
     const [selectedFilters, setSelectedFilters] = useState<Record<string, Set<string>>>({});
+    const [isLoading, setIsLoading] = useState(false)
 
     const handleFilterChange = (attributeName: string, value: string, isChecked: boolean) => {
+        setIsLoading(true)
         setSelectedFilters(prevFilters => {
             const newFilters = { ...prevFilters };
             if (!newFilters[attributeName]) {
@@ -46,6 +49,8 @@ const CategoryComponent = ({ brands, categoryProducts,
 
             return newFilters;
         });
+
+        setTimeout(() => setIsLoading(false), 300)
     };
 
     const filterProducts = (products: Product[], filters: Record<string, Set<string>>) => {
@@ -86,11 +91,11 @@ const CategoryComponent = ({ brands, categoryProducts,
                 </div>
 
                 <div className="flex-1">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {isLoading ? <ProductCardSkeleton /> : (<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredCategoryProducts?.map((product: Product) => (
                             <ProductCard key={product?._id} product={product} />
                         ))}
-                    </div>
+                    </div>)}
 
                     {filteredCategoryProducts?.length === 0 && (
                         <div className="text-center py-12">
