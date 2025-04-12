@@ -425,7 +425,7 @@ const ProductDetailsPage = ({ product }: { product: Product }) => {
                       <span>Quantity</span>
                       <span>{quantity}</span>
                     </div>
-                    {selectedDiscountPrice >0 && selectedPrice !== selectedDiscountPrice / quantity && (
+                    {selectedDiscountPrice > 0 && selectedPrice !== selectedDiscountPrice / quantity && (
                       <div className="flex justify-between text-[#666666]">
                         <span>Discount</span>
                         <span className="text-green-600">
@@ -479,7 +479,7 @@ const ProductDetailsPage = ({ product }: { product: Product }) => {
           </TabsList>
           <TabsContent value="description" className="pt-6">
             <div className="font-inter text-[#666666] space-y-4">
-              <div>{parse(product.description)}</div>
+              <div className='prose'>{parse(product.description)}</div>
             </div>
           </TabsContent>
           <TabsContent value="specifications" className="pt-6">
