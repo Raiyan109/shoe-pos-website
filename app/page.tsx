@@ -1,6 +1,5 @@
 import Image from "next/image"
 import Link from "next/link"
-import BannerCarousel from "@/components/BannerCarousel"
 import { Product } from "@/lib/types"
 import { getBanners, getCategories, getProducts } from "@/lib/api"
 import ProductCard from "@/components/ProductCard"

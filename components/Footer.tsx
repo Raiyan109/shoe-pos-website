@@ -1,8 +1,5 @@
 import Link from "next/link"
 import { Facebook, Instagram, Twitter } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { getSettings } from "@/lib/api"
 
 export default async function Footer() {

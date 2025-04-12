@@ -1,9 +1,5 @@
 import type { Metadata } from "next"
-import Image from "next/image"
-import Link from "next/link"
-import { ArrowRight } from "lucide-react"
 import parse from 'html-react-parser';
-import { Button } from "@/components/ui/button"
 import { getSettings } from "@/lib/api"
 
 export const metadata: Metadata = {
@@ -25,22 +21,6 @@ export default async function ReturnPolicyPage() {
         </div>
       </div>
 
-      {/* Contact CTA */}
-      <div className="bg-gray-50 p-8 rounded-lg text-center">
-        <h2 className="font-poppins text-2xl font-bold text-[#222222] mb-4">Have Questions?</h2>
-        <p className="font-inter text-[#666666] mb-6 max-w-2xl mx-auto">
-          We'd love to hear from you! If you have any questions about our products, services, or company, please don't
-          hesitate to reach out.
-        </p>
-        <Button
-          asChild
-          className="bg-[#ff6600] hover:bg-[#ff6600]/90 text-white font-medium transition-transform hover:scale-105"
-        >
-          <Link href="/contact">
-            Contact Us <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
-        </Button>
-      </div>
     </div>
   )
 }
