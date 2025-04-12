@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 
 export const metadata: Metadata = {
-    title: "Terms and Conditions | E-commerce Store",
-    description: "Read our terms and conditions for using our website and services",
-  }
+  title: "Terms and Conditions | E-commerce Store",
+  description: "Read our terms and conditions for using our website and services",
+}
 
 export default async function TermsPage() {
   const settings = await getSettings()
@@ -18,7 +18,9 @@ export default async function TermsPage() {
     <div className="container mx-auto px-4 py-12">
       <div className="mb-8">
         <h1 className="font-poppins text-3xl md:text-4xl font-bold text-[#222222] mb-4">Terms & Conditions</h1>
-        {settingsData?.terms && parse(settingsData?.terms)}
+        <div className="prose">
+          {settingsData?.terms && parse(settingsData?.terms)}
+        </div>
       </div>
 
       {/* Contact CTA */}

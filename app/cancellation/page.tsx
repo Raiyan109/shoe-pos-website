@@ -18,7 +18,9 @@ export default async function CancellationPage() {
     <div className="container mx-auto px-4 py-12">
       <div className="mb-8">
         <h1 className="font-poppins text-3xl md:text-4xl font-bold text-[#222222] mb-4">Cancellation Policy</h1>
-        {settingsData?.cancellation_policy && parse(settingsData?.cancellation_policy)}
+        <div className="prose">
+          {settingsData?.cancellation_policy && parse(settingsData?.cancellation_policy)}
+        </div>
       </div>
 
       {/* Contact CTA */}

@@ -19,7 +19,9 @@ export default async function ShippingPage() {
         <div className="container mx-auto px-4 py-12">
             <div className="mb-8">
                 <h1 className="font-poppins text-3xl md:text-4xl font-bold text-[#222222] mb-4">Shipping Info</h1>
-                {settingsData?.shipping_info && parse(settingsData?.shipping_info)}
+                <div className="prose">
+                    {settingsData?.shipping_info && parse(settingsData?.shipping_info)}
+                </div>
             </div>
 
             {/* Contact CTA */}
