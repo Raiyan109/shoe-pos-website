@@ -30,6 +30,7 @@ export default function Navbar({ categories, products }: { categories: Category[
     const [searchQuery, setSearchQuery] = useState("")
     const [searchResults, setSearchResults] = useState<Product[]>([])
     const searchInputRef = React.useRef<HTMLInputElement>(null)
+    const mobileSearchInputRef = React.useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         // Focus the search input when search is opened
@@ -68,6 +69,12 @@ export default function Navbar({ categories, products }: { categories: Category[
         return () => window.removeEventListener("scroll", handleScroll)
     }, [])
 
+    // Function to handle product click in mobile view
+    const handleProductClick = () => {
+        setIsSheetOpen(false)
+        setSearchQuery("")
+    }
+
     return (
         <header
             className={cn(
@@ -97,17 +104,17 @@ export default function Navbar({ categories, products }: { categories: Category[
                                     <NavigationMenuTrigger>Categories</NavigationMenuTrigger>
                                     <NavigationMenuContent>
                                         <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                                            {categories?.map((category: Category) =>  {
-                                                if(category?.total_product > 0)
-                                                return (
-                                                    <ListItem
-                                                    key={category?._id}
-                                                    title={category?.category_name}
-                                                    href={`/categories/${category?.category_slug}`}
-                                                >
-                                            
-                                                </ListItem>
-                                                )
+                                            {categories?.map((category: Category) => {
+                                                if (category?.total_product > 0)
+                                                    return (
+                                                        <ListItem
+                                                            key={category?._id}
+                                                            title={category?.category_name}
+                                                            href={`/categories/${category?.category_slug}`}
+                                                        >
+
+                                                        </ListItem>
+                                                    )
                                             })}
                                         </ul>
                                     </NavigationMenuContent>
@@ -139,8 +146,116 @@ export default function Navbar({ categories, products }: { categories: Category[
                                         </Link>
                                     </div>
 
+
+                                    {/* Mobile Search */}
                                     <div className="mb-6">
-                                        <Input placeholder="Search products..." className="font-inter" style={{ width: '250px' }} />
+                                        <div className="flex items-center justify-between">
+                                            <div className="relative flex-1">
+                                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                                                <Input
+                                                    placeholder="Search products..."
+                                                    className="pl-9 font-inter"
+                                                    ref={mobileSearchInputRef}
+                                                    value={searchQuery}
+                                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                                />
+                                            </div>
+                                            {searchQuery && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="ml-2 text-[#444444]"
+                                                    onClick={() => setSearchQuery("")}
+                                                >
+                                                    <X className="h-4 w-4" />
+                                                </Button>
+                                            )}
+                                        </div>
+
+                                        {/* Mobile Search Results - Integrated into the sheet content flow */}
+                                        {searchQuery.trim() !== "" && (
+                                            <div className="mt-4 mb-6 border rounded-md overflow-hidden">
+                                                {searchResults?.length > 0 ? (
+                                                    <div className="max-h-[50vh] overflow-y-auto">
+                                                        {searchResults.slice(0, 5).map((product) => {
+                                                            // Check if variations exist before mapping
+                                                            const variationDiscountPrices = product?.variations
+                                                                ? product?.variations
+                                                                    ?.map((variation: Variation) => variation?.variation_discount_price)
+                                                                    .filter((price): price is number => price !== undefined)
+                                                                : []
+
+                                                            const variationBuyingPrices = product?.variations
+                                                                ? product.variations
+                                                                    ?.map((variation: Variation) => variation?.variation_price)
+                                                                    .filter((price): price is number => price !== undefined)
+                                                                : []
+
+                                                            // Get the first available discount & buying price
+                                                            const firstDiscountPrice =
+                                                                variationDiscountPrices?.length > 0 ? variationDiscountPrices[0] : undefined
+                                                            const firstBuyingPrice =
+                                                                variationBuyingPrices?.length > 0 ? variationBuyingPrices[0] : undefined
+
+                                                            return (
+                                                                <Link
+                                                                    key={product?._id}
+                                                                    href={`/products/${product?._id}`}
+                                                                    className="flex items-center p-3 hover:bg-gray-50 transition-colors border-b last:border-b-0"
+                                                                    onClick={handleProductClick}
+                                                                >
+                                                                    <div className="relative w-16 h-16 rounded overflow-hidden flex-shrink-0">
+                                                                        <Image
+                                                                            src={product?.thumbnail_image || "/placeholder.svg"}
+                                                                            alt={product?.product_name}
+                                                                            fill
+                                                                            className="object-cover"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="ml-3 flex-1">
+                                                                        <h3 className="font-poppins text-sm font-medium text-[#333333] line-clamp-2">
+                                                                            {product?.product_name}
+                                                                        </h3>
+                                                                        <div className="font-poppins font-bold text-[#ff6600]">
+                                                                            {product?.product_price
+                                                                                ? `$${product?.product_price}`
+                                                                                : firstDiscountPrice && firstDiscountPrice > 0
+                                                                                    ? `$${firstDiscountPrice}`
+                                                                                    : "0"}
+
+                                                                            {firstBuyingPrice && firstBuyingPrice > 0 ? (
+                                                                                <span className="ml-2 text-sm line-through text-[#666666]">
+                                                                                    ${firstBuyingPrice}
+                                                                                </span>
+                                                                            ) : (
+                                                                                <span className="ml-2 text-sm line-through text-[#666666]"></span>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                </Link>
+                                                            )
+                                                        })}
+                                                        {searchResults.length > 5 && (
+                                                            <div className="p-3 text-center border-t">
+                                                                <Link
+                                                                    href={`/search?query=${encodeURIComponent(searchQuery)}`}
+                                                                    className="text-[#ff6600] text-sm font-medium hover:underline"
+                                                                    onClick={() => setIsSheetOpen(false)}
+                                                                >
+                                                                    View all {searchResults.length} results
+                                                                </Link>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    <div className="text-center py-6 px-4">
+                                                        <p className="font-inter text-[#666666]">
+                                                            No products found matching &quot;{searchQuery}&quot;
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
 
                                     <nav className="flex flex-col space-y-2">
@@ -161,25 +276,23 @@ export default function Navbar({ categories, products }: { categories: Category[
                                                 <AccordionContent>
                                                     <div className="pl-4 py-2 space-y-2">
                                                         {categories?.map((category) => {
-                                                            if(category?.total_product > 0)
-                                                            return (
-                                                                <Link
-                                                                key={category?._id}
-                                                                href={`/categories/${category?.category_slug}`}
-                                                                className="font-inter text-[#444444] hover:text-[#ff6600] transition-colors flex items-center p-2 rounded-md hover:bg-gray-100"
-                                                                onClick={() => setIsSheetOpen(false)}
-                                                            >
-                                                                <ChevronRight className="h-4 w-4 mr-2 text-[#ff6600]" />
-                                                                {category?.category_name}
-                                                            </Link>
-                                                            )
+                                                            if (category?.total_product > 0)
+                                                                return (
+                                                                    <Link
+                                                                        key={category?._id}
+                                                                        href={`/categories/${category?.category_slug}`}
+                                                                        className="font-inter text-[#444444] hover:text-[#ff6600] transition-colors flex items-center p-2 rounded-md hover:bg-gray-100"
+                                                                        onClick={() => setIsSheetOpen(false)}
+                                                                    >
+                                                                        <ChevronRight className="h-4 w-4 mr-2 text-[#ff6600]" />
+                                                                        {category?.category_name}
+                                                                    </Link>
+                                                                )
                                                         })}
                                                     </div>
                                                 </AccordionContent>
                                             </AccordionItem>
                                         </Accordion>
-
-
                                     </nav>
                                 </div>
                             </SheetContent>

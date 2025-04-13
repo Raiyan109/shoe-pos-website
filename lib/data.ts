@@ -7,36 +7,42 @@ export const categories: Category[] = [
     category_name: "Clothing",
     category_slug: "clothing",
     category_logo: "/placeholder.svg?height=600&width=600",
+    total_product: 2
   },
   {
     _id: "cat2",
     category_name: "Footwear",
     category_slug: "footwear",
     category_logo: "/placeholder.svg?height=600&width=600",
+    total_product: 2
   },
   {
     _id: "cat3",
     category_name: "Accessories",
     category_slug: "accessories",
     category_logo: "/placeholder.svg?height=600&width=600",
+    total_product: 2
   },
   {
     _id: "cat4",
     category_name: "Electronics",
     category_slug: "electronics",
     category_logo: "/placeholder.svg?height=600&width=600",
+    total_product: 2
   },
   {
     _id: "cat5",
     category_name: "Home & Living",
     category_slug: "home-living",
     category_logo: "/placeholder.svg?height=600&width=600",
+    total_product: 2
   },
   {
     _id: "cat6",
     category_name: "Beauty",
     category_slug: "beauty",
     category_logo: "/placeholder.svg?height=600&width=600",
+    total_product: 2
   },
 ]
 
