@@ -97,15 +97,18 @@ export default function Navbar({ categories, products }: { categories: Category[
                                     <NavigationMenuTrigger>Categories</NavigationMenuTrigger>
                                     <NavigationMenuContent>
                                         <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                                            {categories?.map((component: Category) => (
-                                                <ListItem
-                                                    key={component?._id}
-                                                    title={component?.category_name}
-                                                    href={`/categories/${component?.category_slug}`}
+                                            {categories?.map((category: Category) =>  {
+                                                if(category?.total_product > 0)
+                                                return (
+                                                    <ListItem
+                                                    key={category?._id}
+                                                    title={category?.category_name}
+                                                    href={`/categories/${category?.category_slug}`}
                                                 >
-                                                    {/* {component.description} */}
+                                            
                                                 </ListItem>
-                                            ))}
+                                                )
+                                            })}
                                         </ul>
                                     </NavigationMenuContent>
                                 </NavigationMenuItem>
@@ -157,8 +160,10 @@ export default function Navbar({ categories, products }: { categories: Category[
                                                 </AccordionTrigger>
                                                 <AccordionContent>
                                                     <div className="pl-4 py-2 space-y-2">
-                                                        {categories?.map((category) => (
-                                                            <Link
+                                                        {categories?.map((category) => {
+                                                            if(category?.total_product > 0)
+                                                            return (
+                                                                <Link
                                                                 key={category?._id}
                                                                 href={`/categories/${category?.category_slug}`}
                                                                 className="font-inter text-[#444444] hover:text-[#ff6600] transition-colors flex items-center p-2 rounded-md hover:bg-gray-100"
@@ -167,7 +172,8 @@ export default function Navbar({ categories, products }: { categories: Category[
                                                                 <ChevronRight className="h-4 w-4 mr-2 text-[#ff6600]" />
                                                                 {category?.category_name}
                                                             </Link>
-                                                        ))}
+                                                            )
+                                                        })}
                                                     </div>
                                                 </AccordionContent>
                                             </AccordionItem>

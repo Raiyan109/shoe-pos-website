@@ -34,7 +34,7 @@ export default function BannerCarousel({ banners }: BannerCarouselProps) {
         if (!autoplay) return
 
         const interval = setInterval(next, 5000)
-        return () => clearInterval(interval)
+        return () => clearInterval(interval) 
     }, [autoplay, banners?.length])
 
     // Pause autoplay on hover

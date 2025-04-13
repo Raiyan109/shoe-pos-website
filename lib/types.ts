@@ -55,6 +55,7 @@ export interface Product {
     category_name: string
     category_slug: string
     category_logo: string
+    total_product: number
     // productCount: number
   }
   
