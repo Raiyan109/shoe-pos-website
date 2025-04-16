@@ -21,6 +21,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import * as React from "react"
 import { Category, Product, Variation } from "@/lib/types"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 
 export default function Navbar({ categories, products, settingsData }: { categories: Category[], products: Product[], settingsData: string }) {
     const [isScrolled, setIsScrolled] = useState(false)
@@ -31,6 +32,9 @@ export default function Navbar({ categories, products, settingsData }: { categor
     const [searchResults, setSearchResults] = useState<Product[]>([])
     const searchInputRef = React.useRef<HTMLInputElement>(null)
     const mobileSearchInputRef = React.useRef<HTMLInputElement>(null)
+    const pathname = usePathname()
+    console.log("pathname", pathname);
+
 
     useEffect(() => {
         // Focus the search input when search is opened
@@ -96,24 +100,27 @@ export default function Navbar({ categories, products, settingsData }: { categor
                             <NavigationMenuList>
                                 <NavigationMenuItem>
                                     <Link href="/" legacyBehavior passHref>
-                                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                                        <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), pathname === "/" ? "bg-accent" : "")}>
                                             Home
                                         </NavigationMenuLink>
                                     </Link>
                                 </NavigationMenuItem>
 
-                                <div className="hidden lg:flex items-center justify-center">
+                                <div className="hidden lg:flex items-center justify-center gap-1">
                                     {categories?.map((category: Category) => {
-                                        if (category?.total_product > 0)
+                                        if (category?.total_product > 0) {
+                                            const categoryPath = `/categories/${category?.category_slug}`
+                                            const isActive = pathname === categoryPath || pathname.startsWith(`${categoryPath}/`)
                                             return (
                                                 <NavigationMenuItem key={category?._id}>
-                                                    <Link href={`/categories/${category?.category_slug}`} legacyBehavior passHref>
-                                                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                                                    <Link href={categoryPath} legacyBehavior passHref>
+                                                        <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), isActive ? "bg-accent px-2" : " px-2")}>
                                                             {category?.category_name}
                                                         </NavigationMenuLink>
                                                     </Link>
                                                 </NavigationMenuItem>
                                             )
+                                        }
                                     })}
                                 </div>
 
