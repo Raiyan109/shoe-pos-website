@@ -22,7 +22,7 @@ import * as React from "react"
 import { Category, Product, Variation } from "@/lib/types"
 import Image from "next/image"
 
-export default function Navbar({ categories, products, settingsData }: { categories: Category[], products: Product[], settingsData:string }) {
+export default function Navbar({ categories, products, settingsData }: { categories: Category[], products: Product[], settingsData: string }) {
     const [isScrolled, setIsScrolled] = useState(false)
     // const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isSheetOpen, setIsSheetOpen] = useState(false)
@@ -101,8 +101,24 @@ export default function Navbar({ categories, products, settingsData }: { categor
                                         </NavigationMenuLink>
                                     </Link>
                                 </NavigationMenuItem>
+
+                                <div className="hidden lg:flex items-center justify-center">
+                                    {categories?.map((category: Category) => {
+                                        if (category?.total_product > 0)
+                                            return (
+                                                <NavigationMenuItem key={category?._id}>
+                                                    <Link href={`/categories/${category?.category_slug}`} legacyBehavior passHref>
+                                                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                                                            {category?.category_name}
+                                                        </NavigationMenuLink>
+                                                    </Link>
+                                                </NavigationMenuItem>
+                                            )
+                                    })}
+                                </div>
+
                                 <NavigationMenuItem>
-                                    <NavigationMenuTrigger>Categories</NavigationMenuTrigger>
+                                    <NavigationMenuTrigger className="bg-accent">All Categories</NavigationMenuTrigger>
                                     <NavigationMenuContent>
                                         <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                                             {categories?.map((category: Category) => {

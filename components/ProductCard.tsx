@@ -13,7 +13,7 @@ export default function ProductCard({ product }: { product: Product }) {
       .filter((price): price is number => price !== undefined)
     : [];
 
-  const variationBuyingPrices = product?.variations
+  const variationPrices = product?.variations
     ? product.variations
       ?.map((variation: Variation) => variation?.variation_price)
       .filter((price): price is number => price !== undefined)
@@ -21,7 +21,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
   // Get the first available discount & buying price
   const firstDiscountPrice = variationDiscountPrices?.length > 0 ? variationDiscountPrices[0] : undefined;
-  const firstBuyingPrice = variationBuyingPrices?.length > 0 ? variationBuyingPrices[0] : undefined;
+  const firstPrice = variationPrices?.length > 0 ? variationPrices[0] : undefined;
 
   return (
     <div className="group relative bg-white rounded-lg overflow-hidden shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
@@ -52,7 +52,7 @@ export default function ProductCard({ product }: { product: Product }) {
         {/* <p className="font-inter text-sm text-[#666666] mb-3 line-clamp-2">{product.description}</p> */}
 
         <div className="flex items-center justify-between">
-          <div className="font-poppins font-bold text-[#ff6600]">৳ 
+          <div className="font-poppins font-bold text-[#ff6600]">৳
             {(product?.product_discount_price || (firstDiscountPrice ?? 0) > 0) ? (
               (
                 new Intl.NumberFormat("en-IN").format(
@@ -66,7 +66,7 @@ export default function ProductCard({ product }: { product: Product }) {
                 new Intl.NumberFormat("en-IN").format(
                   product?.product_price
                     ? product?.product_price
-                    : firstBuyingPrice ?? 0
+                    : firstPrice ?? 0
                 )
               )
             )}
@@ -80,7 +80,7 @@ export default function ProductCard({ product }: { product: Product }) {
             )} */}
 
             {firstDiscountPrice && firstDiscountPrice > 0 ? (
-              <span className="ml-2 text-sm line-through text-[#666666]">৳ {new Intl.NumberFormat("en-IN").format(firstBuyingPrice ?? 0)}</span>
+              <span className="ml-2 text-sm line-through text-[#666666]">৳ {new Intl.NumberFormat("en-IN").format(firstPrice ?? 0)}</span>
             ) : (
               <span className="ml-2 text-sm line-through text-[#666666]"></span>
             )}
