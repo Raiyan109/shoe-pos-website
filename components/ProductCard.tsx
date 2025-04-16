@@ -52,12 +52,25 @@ export default function ProductCard({ product }: { product: Product }) {
         {/* <p className="font-inter text-sm text-[#666666] mb-3 line-clamp-2">{product.description}</p> */}
 
         <div className="flex items-center justify-between">
-          <div className="font-poppins font-bold text-[#ff6600]">
-            {new Intl.NumberFormat("en-IN").format(product?.product_price
-              ? product.product_price
-              : firstDiscountPrice && firstDiscountPrice > 0
-                ? firstDiscountPrice
-                : 0)}
+          <div className="font-poppins font-bold text-[#ff6600]">৳ 
+            {(product?.product_discount_price || (firstDiscountPrice ?? 0) > 0) ? (
+              (
+                new Intl.NumberFormat("en-IN").format(
+                  product?.product_discount_price
+                    ? product?.product_discount_price
+                    : firstDiscountPrice ?? 0
+                )
+              )
+            ) : (
+              (
+                new Intl.NumberFormat("en-IN").format(
+                  product?.product_price
+                    ? product?.product_price
+                    : firstBuyingPrice ?? 0
+                )
+              )
+            )}
+
             {/* {product?.product_price ? (
               `$${product?.product_price}`
             ) : firstDiscountPrice && firstDiscountPrice > 0 ? (
@@ -66,8 +79,8 @@ export default function ProductCard({ product }: { product: Product }) {
               "0"
             )} */}
 
-            {firstBuyingPrice && firstBuyingPrice > 0 ? (
-              <span className="ml-2 text-sm line-through text-[#666666]">${new Intl.NumberFormat("en-IN").format(firstBuyingPrice)}</span>
+            {firstDiscountPrice && firstDiscountPrice > 0 ? (
+              <span className="ml-2 text-sm line-through text-[#666666]">৳ {new Intl.NumberFormat("en-IN").format(firstBuyingPrice ?? 0)}</span>
             ) : (
               <span className="ml-2 text-sm line-through text-[#666666]"></span>
             )}
