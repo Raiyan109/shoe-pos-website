@@ -22,7 +22,7 @@ import * as React from "react"
 import { Category, Product, Variation } from "@/lib/types"
 import Image from "next/image"
 
-export default function Navbar({ categories, products }: { categories: Category[], products: Product[] }) {
+export default function Navbar({ categories, products, settingsData }: { categories: Category[], products: Product[], settingsData:string }) {
     const [isScrolled, setIsScrolled] = useState(false)
     // const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isSheetOpen, setIsSheetOpen] = useState(false)
@@ -86,7 +86,8 @@ export default function Navbar({ categories, products }: { categories: Category[
                 <div className="flex items-center justify-between">
                     {/* Logo */}
                     <Link href="/" className="font-poppins text-2xl font-bold text-[#222222]">
-                        Store<span className="text-[#ff6600]">Name</span>
+                        {settingsData}
+                        {/* <span className="text-[#ff6600]">Name</span> */}
                     </Link>
 
                     {/* Desktop Navigation */}
@@ -126,7 +127,7 @@ export default function Navbar({ categories, products }: { categories: Category[
 
                     {/* Search and Mobile Menu */}
                     <div className="flex items-center space-x-4">
-                        <Button variant="ghost" size="icon" className="text-[#444444]" onClick={toggleSearch}>
+                        <Button variant="ghost" size="icon" className="text-[#444444] cursor-pointer" onClick={toggleSearch}>
                             <Search className="h-5 w-5" />
                         </Button>
 

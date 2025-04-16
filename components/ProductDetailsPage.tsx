@@ -30,6 +30,8 @@ const ProductDetailsPage = ({ product }: { product: Product }) => {
   });
   const [selectedPrice, setSelectedPrice] = useState(product?.product_price || 0);
   const [selectedDiscountPrice, setSelectedDiscountPrice] = useState(product?.product_discount_price || 0);
+  const [productPrice, setProductPrice] = useState(product?.product_price || 0);
+  const [productDiscountPrice, setProductDiscountPrice] = useState(product?.product_discount_price || 0);
   const [unitPrice, setUnitPrice] = useState(product?.product_discount_price || 0);
   const [selectedQuantity, setSelectedQuantity] = useState(product?.product_quantity || 0);
   const [fullUrl, setFullUrl] = useState('')
@@ -95,6 +97,8 @@ const ProductDetailsPage = ({ product }: { product: Product }) => {
 
     setSelectedDiscountPrice(discountPrice)
     setSelectedPrice(mainPrice)
+    setProductDiscountPrice(unitDiscountPrice)
+    setProductPrice(unitMainPrice)
     setUnitPrice(unitDiscountPrice || unitMainPrice)
     // setSelectedPrice(matchingVariation?.variation_price || product?.product_price || 0);
     // setSelectedDiscountPrice(matchingVariation?.variation_discount_price || product?.product_discount_price || 0)
@@ -248,15 +252,19 @@ const ProductDetailsPage = ({ product }: { product: Product }) => {
             {/* Product price */}
             <div className="font-poppins text-2xl font-bold text-[#ff6600] mb-6">
               <div className="font-poppins text-2xl font-bold text-[#ff6600] mb-6">
-                <span>{selectedDiscountPrice > 0 ? new Intl.NumberFormat("en-IN").format(selectedDiscountPrice) : new Intl.NumberFormat("en-IN").format(selectedPrice)}</span>
-                {selectedDiscountPrice > 0 && <span className="ml-2 text-lg line-through text-[#666666]">
-                  {new Intl.NumberFormat("en-IN").format(selectedPrice)}
-                </span>}
-                {/* {product?.product_discount_price && product.product_discount_price !== selectedDiscountPrice && (
-                <span className="ml-2 text-lg line-through text-[#666666]">
-                  {selectedDiscountPrice}
-                </span>
-              )} */}
+                <span>৳ {productDiscountPrice > 0 ? new Intl.NumberFormat("en-IN").format(productDiscountPrice) : new Intl.NumberFormat("en-IN").format(productPrice)}</span>
+                {productDiscountPrice > 0 &&
+                  <span className="ml-2 text-lg line-through text-[#666666]">
+                    ৳ {new Intl.NumberFormat("en-IN").format(productPrice)}
+                  </span>
+                }
+                {/* <span>৳ {selectedDiscountPrice > 0 ? new Intl.NumberFormat("en-IN").format(selectedDiscountPrice) : new Intl.NumberFormat("en-IN").format(selectedPrice)}</span>
+                {selectedDiscountPrice > 0 &&
+                  <span className="ml-2 text-lg line-through text-[#666666]">
+                    ৳ {new Intl.NumberFormat("en-IN").format(selectedPrice)}
+                  </span>
+                } */}
+
               </div>
             </div>
 
@@ -419,7 +427,7 @@ const ProductDetailsPage = ({ product }: { product: Product }) => {
                   <div className="space-y-2 pb-4 border-b">
                     <div className="flex justify-between text-[#666666]">
                       <span>Price</span>
-                      <span> {new Intl.NumberFormat("en-IN").format(selectedPrice)}</span>
+                      <span>৳ {new Intl.NumberFormat("en-IN").format(selectedPrice)}</span>
                     </div>
                     <div className="flex justify-between text-[#666666]">
                       <span>Quantity</span>
@@ -428,7 +436,7 @@ const ProductDetailsPage = ({ product }: { product: Product }) => {
                     {selectedDiscountPrice > 0 && selectedPrice !== selectedDiscountPrice / quantity && (
                       <div className="flex justify-between text-[#666666]">
                         <span>Discount</span>
-                        <span className="text-green-600">
+                        <span className="text-green-600">৳
                           -{(selectedPrice - selectedDiscountPrice).toFixed(2)}
                         </span>
                       </div>
@@ -438,7 +446,7 @@ const ProductDetailsPage = ({ product }: { product: Product }) => {
                   {/* Total */}
                   <div className="flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span className="text-[#ff6600]"> {selectedDiscountPrice > 0 ? new Intl.NumberFormat("en-IN").format(selectedDiscountPrice) : new Intl.NumberFormat("en-IN").format(selectedPrice)}</span>
+                    <span className="text-[#ff6600]">৳ {selectedDiscountPrice > 0 ? new Intl.NumberFormat("en-IN").format(selectedDiscountPrice) : new Intl.NumberFormat("en-IN").format(selectedPrice)}</span>
                   </div>
 
                   {/* Order button for mobile */}
