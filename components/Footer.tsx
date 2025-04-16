@@ -5,7 +5,6 @@ import { getSettings } from "@/lib/api"
 export default async function Footer() {
   const settings = await getSettings()
   const settingsData = settings?.data[0]
-  console.log(settingsData?.facebook_link);
 
   return (
     <footer className="bg-gray-100 pt-16 pb-8">

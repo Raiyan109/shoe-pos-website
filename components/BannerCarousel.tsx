@@ -44,7 +44,6 @@ export default function BannerCarousel({ banners }: BannerCarouselProps) {
     // Handle shop now button click
     const handleShopNowClick = (e: React.MouseEvent, path: string) => {
         e.stopPropagation() // Stop event propagation
-        console.log("Shop Now clicked, navigating to:", path)
         window.location.href = path // Direct navigation as a fallback
     }
 

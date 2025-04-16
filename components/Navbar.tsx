@@ -33,8 +33,6 @@ export default function Navbar({ categories, products, settingsData }: { categor
     const searchInputRef = React.useRef<HTMLInputElement>(null)
     const mobileSearchInputRef = React.useRef<HTMLInputElement>(null)
     const pathname = usePathname()
-    console.log("pathname", pathname);
-
 
     useEffect(() => {
         // Focus the search input when search is opened
